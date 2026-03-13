@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Netzwerk-Analyse v2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #080808;
+    font-family: 'Courier New', monospace;
+    color: #e0e0e0;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+  #header {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    padding: 10px 20px;
+    background: rgba(8,8,8,0.97);
+    border-bottom: 1px solid #ff6600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+  }
+  .title { font-size: 11px; letter-spacing: 3px; color: #ff6600; text-transform: uppercase; }
+  .status { font-size: 10px; color: #555; letter-spacing: 1px; }
+  .status span { color: #ff6600; }
+  .version-badge {
+    font-size: 9px; letter-spacing: 2px; color: #333;
+    background: #1a1a1a; border: 1px solid #333;
+    padding: 2px 8px;
+  }
+  svg { width: 100vw; height: 100vh; }
+
+.link { stroke-opacity: 0.5; fill: none; }
+.link-financial    { stroke: #f0c040; stroke-width: 1.4; }
+.link-political    { stroke: #4a9eff; stroke-width: 1.2; }
+.link-legal        { stroke: #a0ff80; stroke-width: 1.2; }
+.link-diamond      { stroke: #e080ff; stroke-width: 1.2; }
+.link-lobby        { stroke: #ff8040; stroke-width: 1.2; }
+.link-community    { stroke: #40e0e0; stroke-width: 1.2; }
+.link-investigation{ stroke: #ff4444; stroke-width: 1; stroke-dasharray: 4,3; }
+.link-risk         { stroke: #ff2222; stroke-width: 1; stroke-dasharray: 2,4; }
+.link-international{ stroke: #cc88ff; stroke-width: 1.2; }
+.link-media        { stroke: #ffcc00; stroke-width: 1; stroke-dasharray: 3,3; }
+.link-funding      { stroke: #80ff80; stroke-width: 1.3; }
+.link-religious    { stroke: #ffaaaa; stroke-width: 1.1; }
+.link-vulnerability{ stroke: #ff6644; stroke-width: 1; stroke-dasharray: 5,3; }
+.link-default      { stroke: #444; stroke-width: 1; }
+
+.node circle {
+stroke-width: 1.5;
+cursor: pointer;
+}
+.node:hover circle { filter: brightness(1.4); }
+.node text {
+font-size: 8.5px;
+letter-spacing: 0.3px;
+pointer-events: none;
+text-anchor: middle;
+dominant-baseline: hanging;
+}
+
+/* Colors by type */
+.n-center     circle { fill: #ff6600; stroke: #ff9944; }
+.n-center2    circle { fill: #cc3300; stroke: #ff6600; }
+.n-org        circle { fill: #1a3a5c; stroke: #4a9eff; }
+.n-community  circle { fill: #0d3333; stroke: #40e0e0; }
+.n-financial  circle { fill: #332800; stroke: #f0c040; }
+.n-political  circle { fill: #1a1a4a; stroke: #6666ff; }
+.n-legal      circle { fill: #1a3320; stroke: #a0ff80; }
+.n-diamond    circle { fill: #2a1a3a; stroke: #e080ff; }
+.n-lobby      circle { fill: #3a2000; stroke: #ff8040; }
+.n-investigation circle { fill: #3a0000; stroke: #ff4444; }
+.n-risk       circle { fill: #2a0000; stroke: #ff2222; }
+.n-election   circle { fill: #1a2a1a; stroke: #80ff80; }
+.n-international circle { fill: #1a0a2a; stroke: #cc88ff; }
+.n-media      circle { fill: #2a2a00; stroke: #ffcc00; }
+.n-funding    circle { fill: #0a2a0a; stroke: #80ff80; }
+.n-religious  circle { fill: #2a1a1a; stroke: #ffaaaa; }
+.n-vulnerability circle { fill: #2a1a00; stroke: #ff6644; }
+.n-bundestag  circle { fill: #001a3a; stroke: #0088ff; }
+.n-person     circle { fill: #2a0a3a; stroke: #dd88ff; }
+
+/* text colors */
+.n-center     text { fill: #ff9944; }
+.n-center2    text { fill: #ff6600; }
+.n-org        text { fill: #7abaff; }
+.n-community  text { fill: #60ffff; }
+.n-financial  text { fill: #f0c040; }
+.n-political  text { fill: #8888ff; }
+.n-legal      text { fill: #a0ff80; }
+.n-diamond    text { fill: #e080ff; }
+.n-lobby      text { fill: #ff8040; }
+.n-investigation text { fill: #ff6666; }
+.n-risk       text { fill: #ff4444; }
+.n-election   text { fill: #80ff80; }
+.n-international text { fill: #cc88ff; }
+.n-media      text { fill: #ffcc00; }
+.n-funding    text { fill: #80ff80; }
+.n-religious  text { fill: #ffaaaa; }
+.n-vulnerability text { fill: #ff8866; }
+.n-bundestag  text { fill: #66aaff; }
+.n-person     text { fill: #dd88ff; }
+
+#legend {
+position: absolute;
+bottom: 16px; left: 16px;
+background: rgba(8,8,8,0.92);
+border: 1px solid #222;
+padding: 10px 14px;
+font-size: 8.5px;
+letter-spacing: 1px;
+line-height: 1.9;
+z-index: 10;
+column-count: 2;
+column-gap: 20px;
+}
+.leg-title { color: #ff6600; margin-bottom: 4px; font-size: 9px; letter-spacing: 2px; column-span: all; }
+.leg-item { display: flex; align-items: center; gap: 7px; break-inside: avoid; }
+.leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.leg-line { width: 20px; height: 0; flex-shrink: 0; }
+
+#tooltip {
+position: absolute;
+background: rgba(8,8,8,0.97);
+border: 1px solid #ff6600;
+padding: 8px 12px;
+font-size: 9.5px;
+letter-spacing: 0.5px;
+pointer-events: none;
+display: none;
+z-index: 20;
+max-width: 220px;
+line-height: 1.7;
+}
+.tt-title { color: #ff6600; margin-bottom: 3px; font-size: 11px; }
+.tt-type  { color: #555; font-size: 8px; margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
+
+#controls {
+position: absolute;
+top: 52px; right: 16px;
+z-index: 10;
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+.ctrl-btn {
+background: #111;
+border: 1px solid #333;
+color: #888;
+font-family: ‘Courier New’, monospace;
+font-size: 9px;
+letter-spacing: 1px;
+padding: 5px 10px;
+cursor: pointer;
+text-transform: uppercase;
+}
+.ctrl-btn:hover { border-color: #ff6600; color: #ff6600; }
+.ctrl-btn.active { border-color: #ff6600; color: #ff6600; background: #1a0800; }
+</style>
+
+</head>
+<body>
+
+<div id="header">
+  <div class="title">■ IRG Baden · Einfluss-Netzwerk · v2</div>
+  <div style="display:flex;gap:16px;align-items:center">
+    <div class="status">NODES: <span id="node-count">–</span> &nbsp;|&nbsp; LINKS: <span id="link-count">–</span></div>
+    <div class="version-badge">VERSION 2.0</div>
+  </div>
+</div>
+
+<div id="controls">
+  <button class="ctrl-btn" id="btn-all" onclick="filterLayer('all')">Alle</button>
+  <button class="ctrl-btn" onclick="filterLayer('financial')">Finanzen</button>
+  <button class="ctrl-btn" onclick="filterLayer('political')">Politik</button>
+  <button class="ctrl-btn" onclick="filterLayer('international')">International</button>
+  <button class="ctrl-btn" onclick="filterLayer('vulnerability')">Schwachstellen</button>
+  <button class="ctrl-btn" onclick="filterLayer('investigation')">Ermittlung</button>
+</div>
+
+<svg id="graph"></svg>
+
+<div id="legend">
+  <div class="leg-title">NETZWERK-LEGENDE</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#ff6600"></div> Hauptakteur</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#cc3300"></div> Zweitzentrum</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#4a9eff"></div> Organisation</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#40e0e0"></div> Gemeinde</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#f0c040"></div> Finanzen</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#6666ff"></div> Politik</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#cc88ff"></div> International</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#ffcc00"></div> Medien</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#ffaaaa"></div> Religiös</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#ff4444"></div> Ermittlung</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#ff6644"></div> Schwachstelle</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#dd88ff"></div> Person</div>
+</div>
+
+<div id="tooltip">
+  <div class="tt-title" id="tt-title"></div>
+  <div class="tt-type"  id="tt-type"></div>
+  <div id="tt-body"></div>
+</div>
+
+<script>
+const nodes = [
+  // === CENTRES ===
+  { id: "Rami Suliman",         type: "n-center",        r: 22, layer: "all",           desc: "Zentrale Figur. Leitet IRG Baden, kontrolliert Finanzen, politische & rechtliche Netzwerke." },
+  { id: "IRG Baden",            type: "n-org",           r: 18, layer: "all",           desc: "Israelitische Religionsgemeinschaft Baden. Dachverband jüdischer Gemeinden in BW." },
+  { id: "Zentralrat der Juden", type: "n-center2",       r: 18, layer: "all",           desc: "Zweites Machtzentrum. Verbindet Bundespolitik, ZWST, Funding und IRG." },
+  { id: "Gemeinden (8–10)",     type: "n-community",     r: 14, layer: "all",           desc: "Jüdische Gemeinden in Baden. Zahlen Gemeindesteuer an IRG." },
+
+  // === COMMUNITIES ===
+  { id: "Karlsruhe",            type: "n-community",     r: 9,  layer: "all" },
+  { id: "Mannheim",             type: "n-community",     r: 9,  layer: "all" },
+  { id: "Freiburg",             type: "n-community",     r: 9,  layer: "all" },
+  { id: "Heidelberg",           type: "n-community",     r: 9,  layer: "all" },
+  { id: "Konstanz",             type: "n-community",     r: 9,  layer: "all" },
+  { id: "Pforzheim",            type: "n-community",     r: 9,  layer: "all" },
+  { id: "Lörrach",              type: "n-community",     r: 9,  layer: "all" },
+  { id: "Emmendingen",          type: "n-community",     r: 9,  layer: "all" },
+
+  // === LOCAL COMMUNITY STRUCTURE ===
+  { id: "Gemeinde Vorstand",    type: "n-org",           r: 10, layer: "all",           desc: "Lokaler Vorstand der Gemeinde. Berichtet an IRG Baden." },
+  { id: "Rabbi",                type: "n-religious",     r: 9,  layer: "all",           desc: "Religiöse Legitimation der Gemeinde." },
+  { id: "Community Orgs",       type: "n-community",     r: 9,  layer: "all",           desc: "Lokale Gemeindeorganisationen." },
+
+  // === FINANCIAL ===
+  { id: "Gemeindesteuer",       type: "n-financial",     r: 11, layer: "financial",     desc: "Pflichtbeitrag der Mitglieder. Fließt an IRG Baden Budget." },
+  { id: "IRG Budget",           type: "n-financial",     r: 12, layer: "financial",     desc: "Haushalt der IRG. Kontrolliert Verteilung der Mittel." },
+  { id: "Verteilungskontrolle", type: "n-financial",     r: 10, layer: "financial",     desc: "Wer kontrolliert, wer profitiert." },
+  { id: "ZWST",                 type: "n-financial",     r: 13, layer: "financial",     desc: "Zentralwohlfahrtsstelle. Verteilt Bundesfördermittel an jüdische Gemeinden." },
+  { id: "Bundesministerium",    type: "n-bundestag",     r: 11, layer: "financial",     desc: "Bundesministerien als Fördergeber über ZWST-Kanäle." },
+  { id: "Sozialprogramme",      type: "n-funding",       r: 9,  layer: "financial",     desc: "Sozialprogramme finanziert durch ZWST." },
+  { id: "Donors",               type: "n-funding",       r: 10, layer: "financial",     desc: "Private Großspender. Direkte Finanzierung von Gemeinden." },
+  { id: "Private Funding",      type: "n-funding",       r: 9,  layer: "financial",     desc: "Privatfinanzierung außerhalb staatlicher Kanäle." },
+  { id: "Funding Transparency", type: "n-vulnerability", r: 10, layer: "vulnerability", desc: "Fehlende Transparenz bei Mittelverwendung. Angriffspunkt für Ermittlungen." },
+
+  // === POLITICAL ===
+  { id: "Politische Kontakte BW",  type: "n-political", r: 13, layer: "political",     desc: "Netzwerk in Landespolitik Baden-Württemberg." },
+  { id: "Landesregierung BW",      type: "n-political", r: 12, layer: "political",     desc: "Baden-Württemberg Landesregierung." },
+  { id: "Lobby-Einfluss",          type: "n-lobby",     r: 10, layer: "political" },
+  { id: "Bundestag",               type: "n-bundestag", r: 13, layer: "political",     desc: "Deutscher Bundestag. Funding policy, Schutzgesetze." },
+  { id: "Landtag BW",              type: "n-bundestag", r: 11, layer: "political",     desc: "Landtag Baden-Württemberg. Direktverbindung zu IRG Baden." },
+  { id: "Ministerien",             type: "n-bundestag", r: 10, layer: "political",     desc: "Bundesministerien. Steuern Förderprogramme." },
+  { id: "Bundespolitik",           type: "n-political", r: 11, layer: "political",     desc: "Übergeordnete Bundespolitik. Verbunden mit Zentralrat." },
+  { id: "Parsa Marvi",             type: "n-person",    r: 10, layer: "political",     desc: "MdB SPD. Politischer Kontakt. Aktiv bei Community Events." },
+  { id: "SPD Landtag BW",          type: "n-person",    r: 9,  layer: "political",     desc: "SPD-Fraktion im Landtag BW. Funding support." },
+  { id: "Politischer Schutz",      type: "n-political", r: 10, layer: "political" },
+
+  // === LEGAL ===
+  { id: "Steuerberater/Anwalt",    type: "n-legal",     r: 11, layer: "all",           desc: "Rechtliche Absicherung. Sichert Finanzstruktur ab." },
+  { id: "Rechtsschutz",            type: "n-legal",     r: 10, layer: "all" },
+  { id: "Risikominimierung",       type: "n-legal",     r: 9,  layer: "all" },
+
+  // === DIAMOND ===
+  { id: "Diamantenhandel",         type: "n-diamond",   r: 13, layer: "all",           desc: "Internationales Handelsnetzwerk. Import/Export & Finanzflüsse." },
+  { id: "Int. Handelsrouten",      type: "n-diamond",   r: 9,  layer: "all" },
+  { id: "Business Network",        type: "n-lobby",     r: 10, layer: "all",           desc: "Wirtschaftsnetzwerk. Verbindet Lobbying mit Spendern." },
+
+  // === LOBBY ===
+  { id: "Lobbying-Netzwerk",       type: "n-lobby",     r: 13, layer: "political",     desc: "Verbindet politische, wirtschaftliche & religiöse Akteure." },
+  { id: "Wirtschaftsakteure",      type: "n-lobby",     r: 10, layer: "political" },
+  { id: "Netzwerkeinfluss",        type: "n-lobby",     r: 9,  layer: "political" },
+
+  // === RELIGIOUS LEGITIMACY ===
+  { id: "Rabbinat",                type: "n-religious", r: 11, layer: "all",           desc: "Rabbinisches Gremium. Religiöse Legitimation für Gemeinden und Vorstand." },
+  { id: "ORD",                     type: "n-religious", r: 9,  layer: "all",           desc: "Orthodoxe Rabbinerkonferenz Deutschland." },
+  { id: "CER",                     type: "n-international", r: 9, layer: "international", desc: "Conference of European Rabbis. Europäische religiöse Hierarchie." },
+  { id: "Religiöse Institutionen", type: "n-religious", r: 9,  layer: "all" },
+
+  // === INTERNATIONAL ===
+  { id: "WJC",                     type: "n-international", r: 12, layer: "international", desc: "World Jewish Congress. Globale politische Interessenvertretung." },
+  { id: "EJC",                     type: "n-international", r: 11, layer: "international", desc: "European Jewish Congress. EU-Ebene." },
+  { id: "EU Institutionen",        type: "n-international", r: 11, layer: "international", desc: "Europäische Institutionen. Empfänger von EJC-Lobbyarbeit." },
+
+  // === MEDIA ===
+  { id: "Medien",                  type: "n-media",     r: 11, layer: "media",         desc: "Medienlandschaft. Beeinflusst politische Akteure & Community-Reputation." },
+  { id: "Public Discourse",        type: "n-media",     r: 9,  layer: "media",         desc: "Öffentlicher Diskurs. Schutz oder Gefahr für Netzwerk." },
+
+  // === INVESTIGATION ===
+  { id: "Ermittlungsteam (2)",     type: "n-investigation", r: 11, layer: "investigation", desc: "Externes Ermittlungsteam. 2 Personen. Sammelt Beweise." },
+  { id: "Zeugen",                  type: "n-investigation", r: 8,  layer: "investigation", desc: "Nur mündliche Aussagen. Unzureichend für Gericht." },
+  { id: "Dokumente",               type: "n-investigation", r: 8,  layer: "investigation", desc: "Nur teilweise sichtbar." },
+  { id: "Beweise",                 type: "n-investigation", r: 8,  layer: "investigation", desc: "Beweislage: unzureichend für gerichtliche Verwertung." },
+
+  // === RISK ===
+  { id: "Expositionsrisiko",       type: "n-risk",      r: 11, layer: "vulnerability", desc: "Risiko der Aufdeckung. Führt zu Gegenmaßnahmen." },
+  { id: "Beweisvernichtung",       type: "n-risk",      r: 8,  layer: "vulnerability" },
+  { id: "Netzwerkanpassung",       type: "n-risk",      r: 8,  layer: "vulnerability" },
+
+  // === ELECTION ===
+  { id: "Wahl",                    type: "n-election",  r: 10, layer: "all",           desc: "Interne Wahl. Sichert Machtposition." },
+  { id: "Führungsposition",        type: "n-election",  r: 11, layer: "all" },
+
+  // === VULNERABILITY ===
+  { id: "Interne Konflikte",       type: "n-vulnerability", r: 10, layer: "vulnerability", desc: "Interne Machtkämpfe. Können zu Führungswechsel führen." },
+  { id: "Leadership Elections",    type: "n-vulnerability", r: 9,  layer: "vulnerability", desc: "Wahlen als Kontrollmechanismus. Angriffspunkt." },
+];
+
+const links = [
+  // === CENTRE CONNECTIONS ===
+  { source: "Rami Suliman",         target: "IRG Baden",              type: "financial" },
+  { source: "Rami Suliman",         target: "Lobbying-Netzwerk",      type: "lobby" },
+  { source: "Rami Suliman",         target: "Diamantenhandel",        type: "diamond" },
+  { source: "Rami Suliman",         target: "Politische Kontakte BW", type: "political" },
+  { source: "Rami Suliman",         target: "Rechtsschutz",           type: "legal" },
+  { source: "Rami Suliman",         target: "Steuerberater/Anwalt",   type: "legal" },
+  { source: "Verteilungskontrolle", target: "Rami Suliman",           type: "financial" },
+  { source: "Lobby-Einfluss",       target: "Rami Suliman",           type: "political" },
+  { source: "Politischer Schutz",   target: "Rami Suliman",           type: "political" },
+  { source: "Netzwerkeinfluss",     target: "Rami Suliman",           type: "lobby" },
+  { source: "Wahl",                 target: "Rami Suliman",           type: "political" },
+  { source: "Rami Suliman",         target: "Führungsposition",       type: "political" },
+  { source: "Führungsposition",     target: "Wahl",                   type: "political" },
+
+  // === ZENTRALRAT ===
+  { source: "Zentralrat der Juden", target: "IRG Baden",              type: "political" },
+  { source: "Zentralrat der Juden", target: "Bundespolitik",          type: "political" },
+  { source: "Zentralrat der Juden", target: "ZWST",                   type: "financial" },
+  { source: "Zentralrat der Juden", target: "Funding Transparency",   type: "funding" },
+  { source: "Zentralrat der Juden", target: "WJC",                    type: "international" },
+
+  // === ZWST ===
+  { source: "ZWST",                 target: "Gemeinden (8–10)",        type: "funding" },
+  { source: "ZWST",                 target: "IRG Baden",              type: "funding" },
+  { source: "ZWST",                 target: "Bundesministerium",      type: "funding" },
+  { source: "ZWST",                 target: "Sozialprogramme",        type: "funding" },
+  { source: "Bundesministerium",    target: "ZWST",                   type: "funding" },
+
+  // === IRG STRUCTURE ===
+  { source: "IRG Baden",            target: "Gemeinden (8–10)",        type: "community" },
+  { source: "IRG Baden",            target: "Karlsruhe",               type: "community" },
+  { source: "IRG Baden",            target: "Mannheim",                type: "community" },
+  { source: "IRG Baden",            target: "Freiburg",                type: "community" },
+  { source: "IRG Baden",            target: "Heidelberg",              type: "community" },
+  { source: "IRG Baden",            target: "Konstanz",                type: "community" },
+  { source: "IRG Baden",            target: "Pforzheim",               type: "community" },
+  { source: "IRG Baden",            target: "Lörrach",                 type: "community" },
+  { source: "IRG Baden",            target: "Emmendingen",             type: "community" },
+  { source: "IRG Baden",            target: "Gemeinde Vorstand",       type: "community" },
+
+  // === FINANCIAL FLOW ===
+  { source: "Gemeinden (8–10)",     target: "Gemeindesteuer",          type: "financial" },
+  { source: "Gemeindesteuer",       target: "IRG Budget",              type: "financial" },
+  { source: "IRG Budget",           target: "Verteilungskontrolle",    type: "financial" },
+  { source: "Donors",               target: "Gemeinden (8–10)",        type: "funding" },
+  { source: "Donors",               target: "Private Funding",         type: "funding" },
+  { source: "Business Network",     target: "Lobbying-Netzwerk",       type: "lobby" },
+
+  // === LOCAL COMMUNITY ===
+  { source: "Gemeinde Vorstand",    target: "IRG Baden",               type: "community" },
+  { source: "Rabbi",                target: "Gemeinden (8–10)",        type: "religious" },
+  { source: "Rabbi",                target: "Gemeinde Vorstand",       type: "religious" },
+  { source: "Community Orgs",       target: "Gemeinden (8–10)",        type: "community" },
+
+  // === RELIGIOUS LEGITIMACY ===
+  { source: "Rabbinat",             target: "Gemeinden (8–10)",        type: "religious" },
+  { source: "Rabbinat",             target: "Gemeinde Vorstand",       type: "religious" },
+  { source: "ORD",                  target: "Rabbinat",                type: "religious" },
+  { source: "CER",                  target: "ORD",                     type: "religious" },
+  { source: "Religiöse Institutionen", target: "Lobbying-Netzwerk",   type: "lobby" },
+
+  // === POLITICAL ===
+  { source: "Politische Kontakte BW", target: "Landesregierung BW",   type: "political" },
+  { source: "Landesregierung BW",   target: "Lobby-Einfluss",         type: "political" },
+  { source: "Rami Suliman",         target: "Politischer Schutz",     type: "political" },
+  { source: "Bundestag",            target: "Bundespolitik",          type: "political" },
+  { source: "Landtag BW",          target: "IRG Baden",               type: "political" },
+  { source: "Ministerien",          target: "Sozialprogramme",        type: "funding" },
+  { source: "Bundespolitik",        target: "Zentralrat der Juden",   type: "political" },
+  { source: "Parsa Marvi",          target: "Gemeinden (8–10)",        type: "political" },
+  { source: "Parsa Marvi",          target: "Bundestag",              type: "political" },
+  { source: "SPD Landtag BW",       target: "Landtag BW",             type: "political" },
+  { source: "SPD Landtag BW",       target: "IRG Baden",              type: "political" },
+
+  // === LOBBY ===
+  { source: "Lobbying-Netzwerk",    target: "Politische Kontakte BW", type: "lobby" },
+  { source: "Lobbying-Netzwerk",    target: "Wirtschaftsakteure",     type: "lobby" },
+  { source: "Lobbying-Netzwerk",    target: "Religiöse Institutionen",type: "lobby" },
+
+  // === DIAMOND ===
+  { source: "Diamantenhandel",      target: "Int. Handelsrouten",     type: "diamond" },
+  { source: "Int. Handelsrouten",   target: "Diamantenhandel",        type: "diamond" },
+
+  // === LEGAL ===
+  { source: "Steuerberater/Anwalt", target: "Rechtsschutz",           type: "legal" },
+  { source: "Rechtsschutz",         target: "Risikominimierung",      type: "legal" },
+
+  // === INTERNATIONAL ===
+  { source: "WJC",                  target: "Zentralrat der Juden",   type: "international" },
+  { source: "EJC",                  target: "EU Institutionen",       type: "international" },
+  { source: "EJC",                  target: "WJC",                    type: "international" },
+  { source: "CER",                  target: "EJC",                    type: "international" },
+
+  // === MEDIA ===
+  { source: "Medien",               target: "Politische Kontakte BW", type: "media" },
+  { source: "Medien",               target: "Public Discourse",       type: "media" },
+  { source: "Public Discourse",     target: "Gemeinden (8–10)",        type: "media" },
+
+  // === INVESTIGATION ===
+  { source: "Ermittlungsteam (2)",  target: "Zeugen",                 type: "investigation" },
+  { source: "Ermittlungsteam (2)",  target: "Dokumente",              type: "investigation" },
+  { source: "Zeugen",               target: "Beweise",                type: "investigation" },
+  { source: "Dokumente",            target: "Beweise",                type: "investigation" },
+  { source: "Funding Transparency", target: "Ermittlungsteam (2)",    type: "investigation" },
+
+  // === RISK / VULNERABILITY ===
+  { source: "Expositionsrisiko",    target: "Beweisvernichtung",      type: "risk" },
+  { source: "Expositionsrisiko",    target: "Netzwerkanpassung",      type: "risk" },
+  { source: "Interne Konflikte",    target: "Leadership Elections",   type: "vulnerability" },
+  { source: "Leadership Elections", target: "Führungsposition",       type: "vulnerability" },
+  { source: "Funding Transparency", target: "Public Discourse",       type: "vulnerability" },
+  { source: "Beweise",              target: "Expositionsrisiko",      type: "risk" },
+];
+
+const typeColor = {
+  financial:     "#f0c040",
+  political:     "#4a9eff",
+  legal:         "#a0ff80",
+  diamond:       "#e080ff",
+  lobby:         "#ff8040",
+  community:     "#40e0e0",
+  investigation: "#ff4444",
+  risk:          "#ff2222",
+  international: "#cc88ff",
+  media:         "#ffcc00",
+  funding:       "#80ff80",
+  religious:     "#ffaaaa",
+  vulnerability: "#ff6644",
+  default:       "#444",
+};
+
+const svg = d3.select("#graph");
+const W = window.innerWidth;
+const H = window.innerHeight;
+svg.attr("viewBox", `0 0 ${W} ${H}`);
+
+// Arrow markers
+const defs = svg.append("defs");
+Object.entries(typeColor).forEach(([k,v]) => {
+  defs.append("marker")
+    .attr("id", `arr-${k}`)
+    .attr("viewBox","0 -4 8 8")
+    .attr("refX", 8).attr("refY", 0)
+    .attr("markerWidth", 5).attr("markerHeight", 5)
+    .attr("orient", "auto")
+    .append("path").attr("d","M0,-4L8,0L0,4").attr("fill", v);
+});
+
+const g = svg.append("g").attr("transform", `translate(0,44)`);
+svg.call(d3.zoom().scaleExtent([0.2, 4]).on("zoom", e => g.attr("transform", `translate(${e.transform.x},${e.transform.y + 44}) scale(${e.transform.k})`)));
+
+const simulation = d3.forceSimulation(nodes)
+  .force("link", d3.forceLink(links).id(d => d.id).distance(d => {
+    const centers = ["Rami Suliman","IRG Baden","Zentralrat der Juden","Gemeinden (8–10)"];
+    if (centers.includes(d.source.id) || centers.includes(d.target.id)) return 130;
+    return 75;
+  }).strength(0.35))
+  .force("charge", d3.forceManyBody().strength(-280))
+  .force("center", d3.forceCenter(W/2, (H-44)/2))
+  .force("collision", d3.forceCollide().radius(d => d.r + 16))
+  .force("x", d3.forceX(W/2).strength(0.025))
+  .force("y", d3.forceY((H-44)/2).strength(0.025));
+
+const link = g.append("g").selectAll("line")
+  .data(links).join("line")
+  .attr("class", d => `link link-${d.type}`)
+  .attr("marker-end", d => `url(#arr-${d.type})`);
+
+const node = g.append("g").selectAll("g")
+  .data(nodes).join("g")
+  .attr("class", d => `node ${d.type}`)
+  .call(d3.drag()
+    .on("start", (e,d) => { if(!e.active) simulation.alphaTarget(0.3).restart(); d.fx=d.x; d.fy=d.y; })
+    .on("drag",  (e,d) => { d.fx=e.x; d.fy=e.y; })
+    .on("end",   (e,d) => { if(!e.active) simulation.alphaTarget(0); d.fx=null; d.fy=null; })
+  );
+
+node.append("circle").attr("r", d => d.r);
+node.append("text").attr("dy", d => d.r + 9).text(d => d.id)
+  .style("font-size", d => d.r > 14 ? "9.5px" : "7.5px");
+
+// Tooltip
+const tooltip = document.getElementById("tooltip");
+const typeLabels = { "n-center":"HAUPTAKTEUR","n-center2":"ZWEITZENTRUM","n-org":"ORGANISATION","n-community":"GEMEINDE","n-financial":"FINANZEN","n-political":"POLITIK","n-legal":"LEGAL","n-diamond":"HANDEL","n-lobby":"LOBBYING","n-investigation":"ERMITTLUNG","n-risk":"RISIKO","n-election":"WAHL","n-international":"INTERNATIONAL","n-media":"MEDIEN","n-funding":"FÖRDERUNG","n-religious":"RELIGIÖS","n-vulnerability":"SCHWACHSTELLE","n-bundestag":"STAATLICH","n-person":"PERSON" };
+
+node.on("mouseover", (e,d) => {
+  document.getElementById("tt-title").textContent = d.id;
+  document.getElementById("tt-type").textContent = typeLabels[d.type] || "";
+  document.getElementById("tt-body").textContent = d.desc || "";
+  tooltip.style.display = "block";
+  tooltip.style.left = (e.pageX+14)+"px";
+  tooltip.style.top  = (e.pageY-10)+"px";
+}).on("mousemove", e => {
+  tooltip.style.left = (e.pageX+14)+"px";
+  tooltip.style.top  = (e.pageY-10)+"px";
+}).on("mouseout", () => { tooltip.style.display="none"; });
+
+// Layer filter
+function filterLayer(layer) {
+  document.querySelectorAll(".ctrl-btn").forEach(b => b.classList.remove("active"));
+  if (layer !== "all") event.target.classList.add("active");
+  
+  node.style("opacity", d => layer === "all" || d.layer === layer || d.layer === "all" ? 1 : 0.08);
+  link.style("opacity", d => {
+    if (layer === "all") return 0.5;
+    const sl = nodes.find(n => n.id === (d.source.id||d.source))?.layer;
+    const tl = nodes.find(n => n.id === (d.target.id||d.target))?.layer;
+    return (sl === layer || tl === layer || d.type === layer) ? 0.8 : 0.04;
+  });
+}
+window.filterLayer = filterLayer;
+
+simulation.on("tick", () => {
+  link
+    .attr("x1", d => d.source.x)
+    .attr("y1", d => d.source.y - 44)
+    .attr("x2", d => {
+      const dx = d.target.x-d.source.x, dy = d.target.y-d.source.y;
+      const dist = Math.sqrt(dx*dx+dy*dy)||1;
+      return d.target.x - (dx/dist)*(d.target.r+7);
+    })
+    .attr("y2", d => {
+      const dx = d.target.x-d.source.x, dy = d.target.y-d.source.y;
+      const dist = Math.sqrt(dx*dx+dy*dy)||1;
+      return d.target.y - 44 - (dy/dist)*(d.target.r+7);
+    });
+  node.attr("transform", d => `translate(${d.x},${d.y-44})`);
+});
+
+document.getElementById("node-count").textContent = nodes.length;
+document.getElementById("link-count").textContent = links.length;
+</script>
+
+</body>
+</html>
