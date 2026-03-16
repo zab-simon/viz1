@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Intel Board 2</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs libs/d3/7.8.5/d3.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<title>Прозрачные Честные Выборы</title>
 <style>
   :root { --black:#000; --white:#fff; --orange:#E84A0C; --bg:#F5F5F0; --border:#E0E0E0; --red:#C0392B; --gray:#666; --lgray:#AAA; }
   * { box-sizing:border-box; margin:0; padding:0; }
@@ -18,7 +16,6 @@
   .h-right { text-align:right; }
   .h-date { font-size:10px; color:#666; letter-spacing:.1em; }
   .h-badge { display:inline-block; background:var(--orange); color:white; font-size:9px; font-weight:700; letter-spacing:.15em; padding:4px 12px; margin-top:8px; text-transform:uppercase; }
-
   .lang-flags { display:flex; gap:10px; justify-content:flex-end; margin-top:10px; }
   .flag-btn { font-size:24px; cursor:pointer; opacity:.3; transition:opacity .15s,transform .15s; border:none; background:none; padding:2px; }
   .flag-btn:hover { opacity:.6; }
@@ -36,8 +33,6 @@
   .section-eyebrow { font-size:10px; font-weight:700; letter-spacing:.2em; color:var(--orange); text-transform:uppercase; margin-bottom:4px; border-left:3px solid var(--orange); padding-left:10px; }
   .section-title { font-size:20px; font-weight:800; margin-bottom:4px; padding-left:13px; }
   .section-sub { font-size:11px; color:var(--gray); margin-bottom:16px; padding-left:13px; }
-
-  #web-svg { width:100%; height:520px; background:var(--bg); display:block; border:1px solid var(--border); }
 
   .legend { display:flex; gap:20px; flex-wrap:wrap; margin-top:14px; padding-top:14px; border-top:1px solid var(--border); }
   .leg { display:flex; align-items:center; gap:8px; font-size:10px; font-weight:500; color:var(--gray); }
@@ -62,7 +57,6 @@
   .sys-text { font-size:11px; color:#ccc; line-height:1.7; }
 
   .footer { display:flex; justify-content:space-between; margin-top:32px; padding-top:16px; border-top:2px solid var(--black); font-size:10px; font-weight:700; letter-spacing:.1em; color:var(--gray); text-transform:uppercase; }
-  .tt { position:fixed; background:var(--black); color:white; padding:8px 12px; font-size:11px; pointer-events:none; opacity:0; transition:opacity .15s; z-index:100; white-space:nowrap; border-left:3px solid var(--orange); }
 </style>
 </head>
 <body>
@@ -93,11 +87,140 @@
     <div class="kpi"><div class="kpi-val"><span class="kpi-arrow">↑</span>0</div><div class="kpi-lbl" id="kpi4">Unabhängige Prüfer</div></div>
   </div>
 
+  <!-- MAIN GRAPH — pure static SVG, no scripts -->
   <div class="main-panel">
     <div class="section-eyebrow" id="g-eyebrow">Netz der Kontrolle</div>
     <div class="section-title" id="g-title">Struktureller Nepotismus: Wer kontrolliert wen?</div>
-    <div class="section-sub" id="g-sub">Jede Linie = familiäre Bindung oder Interessenkonflikt. Rot = direkte Wahlmanipulation. Orange = Vorgesetzte/r prüft eigene Familie.</div>
-    <svg id="web-svg"></svg>
+    <div class="section-sub" id="g-sub">Jede Linie = familiäre Bindung oder Interessenkonflikt. Rot = direkte Wahlmanipulation. Orange = Eltern/Kind.</div>
+
+    <svg viewBox="0 0 900 560" style="width:100%;display:block;background:#F5F5F0;border:1px solid #E0E0E0;">
+      <defs>
+        <marker id="ac" viewBox="0 -5 10 10" refX="18" refY="0" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,-5L10,0L0,5" fill="#E84A0C"/></marker>
+        <marker id="ap" viewBox="0 -5 10 10" refX="18" refY="0" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,-5L10,0L0,5" fill="#000"/></marker>
+        <marker id="ar" viewBox="0 -5 10 10" refX="18" refY="0" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,-5L10,0L0,5" fill="#C0392B"/></marker>
+      </defs>
+
+      <!-- grid -->
+      <line x1="0" y1="140" x2="900" y2="140" stroke="#E8E8E8" stroke-width=".5"/>
+      <line x1="0" y1="280" x2="900" y2="280" stroke="#E8E8E8" stroke-width=".5"/>
+      <line x1="0" y1="420" x2="900" y2="420" stroke="#E8E8E8" stroke-width=".5"/>
+      <line x1="180" y1="0" x2="180" y2="560" stroke="#E8E8E8" stroke-width=".5"/>
+      <line x1="360" y1="0" x2="360" y2="560" stroke="#E8E8E8" stroke-width=".5"/>
+      <line x1="540" y1="0" x2="540" y2="560" stroke="#E8E8E8" stroke-width=".5"/>
+      <line x1="720" y1="0" x2="720" y2="560" stroke="#E8E8E8" stroke-width=".5"/>
+
+      <!-- CONTROL lines (orange dashed) to Zentrum 450,280 -->
+      <line x1="155" y1="115" x2="422" y2="268" stroke="#E84A0C" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#ac)"/>
+      <line x1="120" y1="280" x2="418" y2="280" stroke="#E84A0C" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#ac)"/>
+      <line x1="155" y1="445" x2="422" y2="292" stroke="#E84A0C" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#ac)"/>
+      <line x1="370" y1="490" x2="438" y2="302" stroke="#E84A0C" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#ac)"/>
+      <line x1="590" y1="490" x2="462" y2="302" stroke="#E84A0C" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#ac)"/>
+      <line x1="750" y1="445" x2="472" y2="292" stroke="#E84A0C" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#ac)"/>
+      <line x1="780" y1="280" x2="482" y2="280" stroke="#E84A0C" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#ac)"/>
+      <line x1="590" y1="80" x2="462" y2="268" stroke="#E84A0C" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#ac)"/>
+
+      <!-- FAMILY lines -->
+      <line x1="155" y1="130" x2="155" y2="200" stroke="#000" stroke-width="2" marker-end="url(#ap)"/>
+      <line x1="145" y1="200" x2="145" y2="130" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#ar)"/>
+      <line x1="140" y1="115" x2="115" y2="270" stroke="#000" stroke-width="1" stroke-dasharray="4,3" opacity=".35"/>
+      <line x1="750" y1="95" x2="810" y2="175" stroke="#000" stroke-width="2" marker-end="url(#ap)"/>
+      <line x1="780" y1="295" x2="780" y2="370" stroke="#000" stroke-width="2" marker-end="url(#ap)"/>
+      <line x1="370" y1="505" x2="310" y2="505" stroke="#000" stroke-width="2" marker-end="url(#ap)"/>
+      <line x1="590" y1="505" x2="650" y2="505" stroke="#000" stroke-width="2" marker-end="url(#ap)"/>
+      <line x1="155" y1="460" x2="90" y2="505" stroke="#000" stroke-width="2" marker-end="url(#ap)"/>
+      <line x1="120" y1="295" x2="120" y2="370" stroke="#000" stroke-width="2" marker-end="url(#ap)"/>
+      <line x1="590" y1="95" x2="660" y2="145" stroke="#000" stroke-width="1.5" stroke-dasharray="4,3" opacity=".5"/>
+      <line x1="590" y1="95" x2="530" y2="145" stroke="#000" stroke-width="1.5" stroke-dasharray="4,3" opacity=".5"/>
+
+      <!-- ZENTRUM -->
+      <circle cx="450" cy="280" r="48" fill="none" stroke="#E84A0C" stroke-width="1.5" stroke-opacity=".2"/>
+      <rect x="406" y="262" width="88" height="36" rx="2" fill="#000" stroke="#E84A0C" stroke-width="2"/>
+      <text x="450" y="285" text-anchor="middle" fill="white" font-size="13" font-weight="700">Zentrum</text>
+
+      <!-- ROTTWEIL — left top -->
+      <text x="90" y="52" text-anchor="middle" fill="#E84A0C" font-size="9" font-weight="700" opacity=".7">ROTTWEIL</text>
+      <circle cx="155" cy="100" r="26" fill="#C0392B" stroke="white" stroke-width="2"/>
+      <circle cx="155" cy="100" r="33" fill="none" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,3" opacity=".5"/>
+      <text x="155" y="96" text-anchor="middle" fill="white" font-size="9" font-weight="700">T. Malafi</text>
+      <text x="155" y="108" text-anchor="middle" fill="white" font-size="8">Delegierte</text>
+      <text x="155" y="142" text-anchor="middle" fill="#444" font-size="8">Angestellte</text>
+
+      <circle cx="155" cy="222" r="22" fill="#C0392B" stroke="white" stroke-width="2"/>
+      <circle cx="155" cy="222" r="29" fill="none" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,3" opacity=".5"/>
+      <text x="155" y="218" text-anchor="middle" fill="white" font-size="9" font-weight="700">M. Malafi</text>
+      <text x="155" y="230" text-anchor="middle" fill="white" font-size="8">Sohn · Sicherh.</text>
+      <text x="155" y="252" text-anchor="middle" fill="#C0392B" font-size="8" font-weight="700">⚠ prüft Mutter</text>
+
+      <circle cx="112" cy="280" r="20" fill="#E84A0C" stroke="white" stroke-width="2"/>
+      <text x="112" y="276" text-anchor="middle" fill="white" font-size="8" font-weight="700">V. Schwed-</text>
+      <text x="112" y="286" text-anchor="middle" fill="white" font-size="8">chenko</text>
+      <text x="112" y="308" text-anchor="middle" fill="#444" font-size="8">Schwester · Del.</text>
+
+      <!-- LÖRRACH — left bottom -->
+      <text x="155" y="420" text-anchor="middle" fill="#E84A0C" font-size="9" font-weight="700" opacity=".7">LÖRRACH</text>
+      <circle cx="155" cy="448" r="24" fill="#666" stroke="white" stroke-width="2"/>
+      <text x="155" y="444" text-anchor="middle" fill="white" font-size="9" font-weight="700">H. Scheinker</text>
+      <text x="155" y="456" text-anchor="middle" fill="white" font-size="8">Vorsitzende</text>
+      <circle cx="86" cy="510" r="18" fill="#666" stroke="white" stroke-width="2"/>
+      <text x="86" y="506" text-anchor="middle" fill="white" font-size="8" font-weight="700">Sohn</text>
+      <text x="86" y="516" text-anchor="middle" fill="white" font-size="8">Angest.</text>
+      <text x="86" y="538" text-anchor="middle" fill="#C0392B" font-size="7">⚠ Mutter = Chefin</text>
+
+      <!-- FREIBURG — left mid -->
+      <text x="50" y="322" text-anchor="middle" fill="#E84A0C" font-size="9" font-weight="700" opacity=".7">FREIBURG</text>
+      <circle cx="112" cy="348" r="22" fill="#666" stroke="white" stroke-width="2"/>
+      <text x="112" y="344" text-anchor="middle" fill="white" font-size="9" font-weight="700">I. Katz</text>
+      <text x="112" y="356" text-anchor="middle" fill="white" font-size="8">Vorsitzende</text>
+      <circle cx="112" cy="408" r="18" fill="#666" stroke="white" stroke-width="2"/>
+      <text x="112" y="404" text-anchor="middle" fill="white" font-size="8" font-weight="700">N. Katz</text>
+      <text x="112" y="414" text-anchor="middle" fill="white" font-size="8">Sohn · Sich.</text>
+
+      <!-- EMMENDINGEN — bottom center-left -->
+      <text x="370" y="452" text-anchor="middle" fill="#E84A0C" font-size="9" font-weight="700" opacity=".7">EMMENDINGEN</text>
+      <circle cx="370" cy="478" r="24" fill="#E84A0C" stroke="white" stroke-width="2"/>
+      <text x="370" y="474" text-anchor="middle" fill="white" font-size="8" font-weight="700">O. Maryanovskaya</text>
+      <text x="370" y="484" text-anchor="middle" fill="white" font-size="8">Delegierte</text>
+      <circle cx="300" cy="510" r="18" fill="#666" stroke="white" stroke-width="2"/>
+      <text x="300" y="506" text-anchor="middle" fill="white" font-size="8" font-weight="700">Tochter</text>
+      <text x="300" y="516" text-anchor="middle" fill="white" font-size="8">Angest.</text>
+
+      <circle cx="590" cy="478" r="22" fill="#C0392B" stroke="white" stroke-width="2"/>
+      <circle cx="590" cy="478" r="29" fill="none" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,3" opacity=".5"/>
+      <text x="590" y="474" text-anchor="middle" fill="white" font-size="8" font-weight="700">R. Manaschirov</text>
+      <text x="590" y="484" text-anchor="middle" fill="white" font-size="8">Angest. + Del.</text>
+      <text x="590" y="452" text-anchor="middle" fill="#E84A0C" font-size="9" font-weight="700" opacity=".7">EMMENDINGEN</text>
+
+      <!-- MANNHEIM — top center -->
+      <text x="590" y="42" text-anchor="middle" fill="#E84A0C" font-size="9" font-weight="700" opacity=".7">MANNHEIM</text>
+      <circle cx="590" cy="68" r="24" fill="#666" stroke="white" stroke-width="2"/>
+      <text x="590" y="64" text-anchor="middle" fill="white" font-size="8" font-weight="700">S. Benizri-Wedde</text>
+      <text x="590" y="74" text-anchor="middle" fill="white" font-size="8">Vorstand · Angest.</text>
+      <circle cx="660" cy="155" r="16" fill="#aaa" stroke="white" stroke-width="1.5"/>
+      <text x="660" y="159" text-anchor="middle" fill="white" font-size="8">Sohn 1?</text>
+      <circle cx="528" cy="155" r="16" fill="#aaa" stroke="white" stroke-width="1.5"/>
+      <text x="528" y="159" text-anchor="middle" fill="white" font-size="8">Sohn 2?</text>
+
+      <!-- PFORZHEIM — top right -->
+      <text x="750" y="42" text-anchor="middle" fill="#E84A0C" font-size="9" font-weight="700" opacity=".7">PFORZHEIM</text>
+      <circle cx="750" cy="70" r="28" fill="#000" stroke="#E84A0C" stroke-width="2.5"/>
+      <text x="750" y="66" text-anchor="middle" fill="white" font-size="10" font-weight="700">Rami S.</text>
+      <text x="750" y="78" text-anchor="middle" fill="#E84A0C" font-size="8">Vorsitzender</text>
+      <circle cx="818" cy="188" r="20" fill="#666" stroke="white" stroke-width="2"/>
+      <text x="818" y="184" text-anchor="middle" fill="white" font-size="8" font-weight="700">P. Suliman</text>
+      <text x="818" y="194" text-anchor="middle" fill="white" font-size="8">Cousin · Angest.</text>
+
+      <!-- KONSTANZ — right -->
+      <text x="820" y="248" text-anchor="middle" fill="#E84A0C" font-size="9" font-weight="700" opacity=".7">KONSTANZ</text>
+      <circle cx="786" cy="268" r="22" fill="#666" stroke="white" stroke-width="2"/>
+      <text x="786" y="264" text-anchor="middle" fill="white" font-size="9" font-weight="700">G. Albilia</text>
+      <text x="786" y="274" text-anchor="middle" fill="white" font-size="8">Vorstand · Angest.</text>
+      <circle cx="786" cy="388" r="20" fill="#E84A0C" stroke="white" stroke-width="2"/>
+      <text x="786" y="384" text-anchor="middle" fill="white" font-size="9" font-weight="700">N. Albilia</text>
+      <text x="786" y="394" text-anchor="middle" fill="white" font-size="8">Sohn · Del.</text>
+      <text x="786" y="416" text-anchor="middle" fill="#C0392B" font-size="8" font-weight="700">⚠ Vater = Chef</text>
+
+    </svg>
+
     <div class="legend">
       <div class="leg"><div class="leg-c" style="background:#E84A0C"></div><span id="l1">Delegierter</span></div>
       <div class="leg"><div class="leg-c" style="background:#000"></div><span id="l2">Angestellter</span></div>
@@ -107,15 +230,16 @@
     </div>
   </div>
 
+  <!-- CITY CARDS -->
   <div class="cards-title" id="cards-title">Interessenkonflikte nach Stadt</div>
   <div class="cards-grid">
 
     <div class="city-card">
       <div class="city-eyebrow">Rottweil</div>
-      <div class="city-name" id="cn-rot">Familie Malafi + Schwedchenko</div>
+      <div class="city-name t" data-de="Familie Malafi + Schwedchenko" data-en="Malafi + Schwedchenko Family" data-ru="Семья Малафи + Шведченко"></div>
       <div class="ci"><div class="ci-dot red"></div><div class="ci-text"><span class="ci-name">Tatjana Malafi</span> — <span class="t" data-de="Angestellte + Vorstandsmitglied + Delegierte" data-en="Employee + Board member + Delegate" data-ru="Сотрудница + член правления + делегат"></span></div></div>
-      <div class="ci"><div class="ci-dot red"></div><div class="ci-text"><span class="ci-name">Michael Malafi</span> (<span class="t" data-de="Sohn" data-en="son" data-ru="сын"></span>) — <span class="t" data-de="Angestellter + Ersatzdelegierter + Sicherheitskoordinator der gesamten Vereinigung · <strong>prüft Finanzen seiner Mutter</strong>" data-en="Employee + Deputy delegate + Security coordinator · <strong>audits his mother's finances</strong>" data-ru="Сотрудник + зам.делегата + координатор безопасности · <strong>проверяет финансы матери</strong>"></span></div></div>
-      <div class="ci"><div class="ci-dot"></div><div class="ci-text"><span class="ci-name">Viktoria Schwedchenko</span> (<span class="t" data-de="Schwester von Tatjana, Tante von Michael" data-en="sister of Tatjana, aunt of Michael" data-ru="сестра Татьяны, тётя Михаила"></span>) — <span class="t" data-de="Delegierte JG Rottweil" data-en="Delegate JG Rottweil" data-ru="Делегат JG Rottweil"></span></div></div>
+      <div class="ci"><div class="ci-dot red"></div><div class="ci-text"><span class="ci-name">Michael Malafi</span> (<span class="t" data-de="Sohn" data-en="son" data-ru="сын"></span>) — <span class="t" data-de="Angestellter + Ersatzdelegierter + Sicherheitskoordinator · <strong>prüft Finanzen seiner Mutter</strong>" data-en="Employee + Deputy delegate + Security coordinator · <strong>audits his mother's finances</strong>" data-ru="Сотрудник + зам.делегата + координатор безопасности · <strong>проверяет финансы матери</strong>"></span></div></div>
+      <div class="ci"><div class="ci-dot"></div><div class="ci-text"><span class="ci-name">Viktoria Schwedchenko</span> — <span class="t" data-de="Schwester von Tatjana · Delegierte" data-en="Sister of Tatjana · Delegate" data-ru="Сестра Татьяны · Делегат"></span></div></div>
       <span class="tag-c t" data-de="3 Familienmitglieder" data-en="3 family members" data-ru="3 члена семьи"></span>
       <span class="tag-n t" data-de="Sohn prüft Mutter" data-en="Son audits mother" data-ru="Сын проверяет мать"></span>
     </div>
@@ -125,7 +249,7 @@
       <div class="city-name t" data-de="Familie Suliman" data-en="Suliman Family" data-ru="Семья Сулиман"></div>
       <div class="ci"><div class="ci-dot red"></div><div class="ci-text"><span class="ci-name">Rami Suliman</span> — <span class="t" data-de="Vorsitzender · strukturelle Macht über alle Gemeinden" data-en="Chairman · structural power over all communities" data-ru="Председатель · структурная власть над всеми общинами"></span></div></div>
       <div class="ci"><div class="ci-dot red"></div><div class="ci-text"><span class="ci-name">Pinchas Suliman</span> (<span class="t" data-de="Cousin" data-en="cousin" data-ru="двоюродный брат"></span>) — <span class="t" data-de="Angestellter JG Pforzheim" data-en="Employee JG Pforzheim" data-ru="Сотрудник JG Pforzheim"></span></div></div>
-      <div class="ci"><div class="ci-dot"></div><div class="ci-text"><span class="t" data-de="Tochter von Rami + Rami selbst — wohnen in gemeindeeigener Wohnung (zu prüfen)" data-en="Rami's daughter + Rami — live in community apartment (to verify)" data-ru="Дочь Рами + сам Рами — живут в квартире общины (требует проверки)"></span></div></div>
+      <div class="ci"><div class="ci-dot"></div><div class="ci-text"><span class="t" data-de="Rami + Tochter wohnen in gemeindeeigener Wohnung (zu prüfen)" data-en="Rami + daughter live in community apartment (to verify)" data-ru="Рами + дочь живут в квартире общины (требует проверки)"></span></div></div>
       <span class="tag-c t" data-de="Cousin angestellt" data-en="Cousin employed" data-ru="Кузен на зарплате"></span>
       <span class="tag-n t" data-de="Gemeindewohnung" data-en="Community apartment" data-ru="Квартира общины"></span>
     </div>
@@ -177,32 +301,210 @@
 
   </div>
 
+  <!-- SYSTEM BLOCK -->
   <div class="sys-block">
     <div>
-      <div class="sys-eyebrow">🇩🇪</div>
+      <div class="sys-eyebrow">🇩🇪 Systemisches Problem</div>
       <div class="sys-text">Durch dieses Netz von Verwandtschaften werden die Stimmen im obersten Gremium kontrolliert. Delegierte wählen den Vorstand — und die Familien der Delegierten werden mit sicheren Stellen versorgt. Dies widerspricht den Grundsätzen freier und demokratischer Wahlen.</div>
     </div>
     <div>
-      <div class="sys-eyebrow">🇬🇧</div>
+      <div class="sys-eyebrow">🇬🇧 Systemic Issue</div>
       <div class="sys-text">Through this network of family ties, votes in the governing body are controlled. Delegates elect the board — and the families of delegates are provided with secure employment. This contradicts the principles of free and democratic elections.</div>
     </div>
     <div>
-      <div class="sys-eyebrow">🇷🇺</div>
+      <div class="sys-eyebrow">🇷🇺 Системная проблема</div>
       <div class="sys-text">Через эту сеть родственных связей контролируются голоса в руководящем органе. Делегаты выбирают правление — а семьи делегатов обеспечиваются надёжными рабочими местами. Это противоречит принципам свободных и демократических выборов.</div>
     </div>
   </div>
 
-  <div class="footer">
-    <div>Прозрачные Честные Выборы · März 2026</div>
-    <div>Wahl: 22.03.2026    </div>
+  <!-- FAMILY CLUSTERS -->
+  <div style="margin-top:32px;">
+    <div style="font-size:20px;font-weight:800;margin-bottom:20px;" id="fc-title">Familiäre Cluster nach Stadt</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:#000;">
+
+      <div style="background:#fff;padding:18px 20px;">
+        <div style="font-size:9px;font-weight:700;letter-spacing:.2em;color:#E84A0C;text-transform:uppercase;border-bottom:2px solid #E84A0C;padding-bottom:4px;display:inline-block;margin-bottom:12px;">Rottweil</div>
+        <svg viewBox="0 0 260 170" style="width:100%;display:block;background:#F5F5F0;border:1px solid #E0E0E0;">
+          <line x1="130" y1="50" x2="130" y2="108" stroke="#E84A0C" stroke-width="2"/>
+          <polygon points="130,108 126,98 134,98" fill="#E84A0C"/>
+          <line x1="120" y1="108" x2="120" y2="50" stroke="#C0392B" stroke-width="2" stroke-dasharray="5,3"/>
+          <polygon points="120,50 116,60 124,60" fill="#C0392B"/>
+          <line x1="105" y1="42" x2="50" y2="85" stroke="#000" stroke-width="1.5" stroke-dasharray="4,3" opacity=".4"/>
+          <circle cx="130" cy="36" r="22" fill="#C0392B" stroke="white" stroke-width="2"/>
+          <text x="130" y="32" text-anchor="middle" fill="white" font-size="8" font-weight="700">T. Malafi</text>
+          <text x="130" y="42" text-anchor="middle" fill="white" font-size="7">Del. · Angest.</text>
+          <text x="130" y="66" text-anchor="middle" fill="#444" font-size="7">Rottweil</text>
+          <circle cx="130" cy="124" r="20" fill="#C0392B" stroke="white" stroke-width="2"/>
+          <text x="130" y="120" text-anchor="middle" fill="white" font-size="8" font-weight="700">M. Malafi</text>
+          <text x="130" y="130" text-anchor="middle" fill="white" font-size="7">Sohn · Sicherh.</text>
+          <text x="130" y="151" text-anchor="middle" fill="#C0392B" font-size="7" font-weight="700">⚠ prüft Mutter</text>
+          <circle cx="45" cy="85" r="18" fill="#E84A0C" stroke="white" stroke-width="2"/>
+          <text x="45" y="81" text-anchor="middle" fill="white" font-size="6" font-weight="700">V. Schwed-</text>
+          <text x="45" y="91" text-anchor="middle" fill="white" font-size="6">chenko</text>
+          <text x="45" y="111" text-anchor="middle" fill="#444" font-size="7">Schwester·Del.</text>
+        </svg>
+      </div>
+
+      <div style="background:#fff;padding:18px 20px;">
+        <div style="font-size:9px;font-weight:700;letter-spacing:.2em;color:#E84A0C;text-transform:uppercase;border-bottom:2px solid #E84A0C;padding-bottom:4px;display:inline-block;margin-bottom:12px;">Pforzheim</div>
+        <svg viewBox="0 0 260 170" style="width:100%;display:block;background:#F5F5F0;border:1px solid #E0E0E0;">
+          <line x1="130" y1="54" x2="130" y2="108" stroke="#E84A0C" stroke-width="2"/>
+          <polygon points="130,108 126,98 134,98" fill="#E84A0C"/>
+          <circle cx="130" cy="36" r="24" fill="#000" stroke="#E84A0C" stroke-width="2"/>
+          <text x="130" y="32" text-anchor="middle" fill="white" font-size="9" font-weight="700">Rami S.</text>
+          <text x="130" y="43" text-anchor="middle" fill="#E84A0C" font-size="7">Vorsitzender</text>
+          <circle cx="130" cy="126" r="20" fill="#666" stroke="white" stroke-width="2"/>
+          <text x="130" y="122" text-anchor="middle" fill="white" font-size="8" font-weight="700">P. Suliman</text>
+          <text x="130" y="132" text-anchor="middle" fill="white" font-size="7">Cousin · Angest.</text>
+        </svg>
+      </div>
+
+      <div style="background:#fff;padding:18px 20px;">
+        <div style="font-size:9px;font-weight:700;letter-spacing:.2em;color:#E84A0C;text-transform:uppercase;border-bottom:2px solid #E84A0C;padding-bottom:4px;display:inline-block;margin-bottom:12px;">Konstanz</div>
+        <svg viewBox="0 0 260 170" style="width:100%;display:block;background:#F5F5F0;border:1px solid #E0E0E0;">
+          <line x1="130" y1="54" x2="130" y2="108" stroke="#E84A0C" stroke-width="2"/>
+          <polygon points="130,108 126,98 134,98" fill="#E84A0C"/>
+          <circle cx="130" cy="36" r="22" fill="#666" stroke="white" stroke-width="2"/>
+          <text x="130" y="32" text-anchor="middle" fill="white" font-size="8" font-weight="700">G. Albilia</text>
+          <text x="130" y="42" text-anchor="middle" fill="white" font-size="7">Vorstand · Angest.</text>
+          <circle cx="130" cy="124" r="20" fill="#E84A0C" stroke="white" stroke-width="2"/>
+          <text x="130" y="120" text-anchor="middle" fill="white" font-size="8" font-weight="700">N. Albilia</text>
+          <text x="130" y="130" text-anchor="middle" fill="white" font-size="7">Sohn · Delegierter</text>
+          <text x="130" y="152" text-anchor="middle" fill="#C0392B" font-size="7" font-weight="700">⚠ Vorgesetzter = Vater</text>
+        </svg>
+      </div>
+
+      <div style="background:#fff;padding:18px 20px;">
+        <div style="font-size:9px;font-weight:700;letter-spacing:.2em;color:#E84A0C;text-transform:uppercase;border-bottom:2px solid #E84A0C;padding-bottom:4px;display:inline-block;margin-bottom:12px;">Emmendingen</div>
+        <svg viewBox="0 0 260 170" style="width:100%;display:block;background:#F5F5F0;border:1px solid #E0E0E0;">
+          <line x1="80" y1="54" x2="80" y2="108" stroke="#E84A0C" stroke-width="2"/>
+          <polygon points="80,108 76,98 84,98" fill="#E84A0C"/>
+          <circle cx="80" cy="36" r="22" fill="#E84A0C" stroke="white" stroke-width="2"/>
+          <text x="80" y="32" text-anchor="middle" fill="white" font-size="7" font-weight="700">O. Maryanovskaya</text>
+          <text x="80" y="42" text-anchor="middle" fill="white" font-size="7">Delegierte</text>
+          <circle cx="80" cy="124" r="18" fill="#666" stroke="white" stroke-width="2"/>
+          <text x="80" y="120" text-anchor="middle" fill="white" font-size="7" font-weight="700">Tochter</text>
+          <text x="80" y="130" text-anchor="middle" fill="white" font-size="7">Angestellte</text>
+          <circle cx="190" cy="80" r="22" fill="#C0392B" stroke="white" stroke-width="2"/>
+          <text x="190" y="76" text-anchor="middle" fill="white" font-size="7" font-weight="700">R. Manaschirov</text>
+          <text x="190" y="86" text-anchor="middle" fill="white" font-size="7">Angest. + Del.</text>
+          <text x="190" y="110" text-anchor="middle" fill="#C0392B" font-size="7" font-weight="700">⚠ Doppelrolle</text>
+        </svg>
+      </div>
+
+      <div style="background:#fff;padding:18px 20px;">
+        <div style="font-size:9px;font-weight:700;letter-spacing:.2em;color:#E84A0C;text-transform:uppercase;border-bottom:2px solid #E84A0C;padding-bottom:4px;display:inline-block;margin-bottom:12px;">Lörrach</div>
+        <svg viewBox="0 0 260 170" style="width:100%;display:block;background:#F5F5F0;border:1px solid #E0E0E0;">
+          <line x1="130" y1="54" x2="130" y2="106" stroke="#C0392B" stroke-width="2"/>
+          <polygon points="130,106 126,96 134,96" fill="#C0392B"/>
+          <line x1="120" y1="106" x2="120" y2="54" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="5,3"/>
+          <polygon points="120,54 116,64 124,64" fill="#C0392B"/>
+          <circle cx="130" cy="36" r="22" fill="#666" stroke="white" stroke-width="2"/>
+          <text x="130" y="32" text-anchor="middle" fill="white" font-size="8" font-weight="700">H. Scheinker</text>
+          <text x="130" y="42" text-anchor="middle" fill="white" font-size="7">Vorsitzende</text>
+          <circle cx="130" cy="122" r="20" fill="#666" stroke="white" stroke-width="2"/>
+          <text x="130" y="118" text-anchor="middle" fill="white" font-size="8" font-weight="700">Sohn</text>
+          <text x="130" y="128" text-anchor="middle" fill="white" font-size="7">Angestellter</text>
+          <text x="130" y="152" text-anchor="middle" fill="#C0392B" font-size="7" font-weight="700">⚠ Gegenseitige Kontrolle</text>
+        </svg>
+      </div>
+
+      <div style="background:#fff;padding:18px 20px;">
+        <div style="font-size:9px;font-weight:700;letter-spacing:.2em;color:#E84A0C;text-transform:uppercase;border-bottom:2px solid #E84A0C;padding-bottom:4px;display:inline-block;margin-bottom:12px;">Freiburg</div>
+        <svg viewBox="0 0 260 170" style="width:100%;display:block;background:#F5F5F0;border:1px solid #E0E0E0;">
+          <line x1="130" y1="54" x2="130" y2="106" stroke="#C0392B" stroke-width="2"/>
+          <polygon points="130,106 126,96 134,96" fill="#C0392B"/>
+          <circle cx="130" cy="36" r="22" fill="#666" stroke="white" stroke-width="2"/>
+          <text x="130" y="32" text-anchor="middle" fill="white" font-size="8" font-weight="700">I. Katz</text>
+          <text x="130" y="42" text-anchor="middle" fill="white" font-size="7">Vorsitzende</text>
+          <circle cx="130" cy="122" r="20" fill="#666" stroke="white" stroke-width="2"/>
+          <text x="130" y="118" text-anchor="middle" fill="white" font-size="8" font-weight="700">N. Katz</text>
+          <text x="130" y="128" text-anchor="middle" fill="white" font-size="7">Sohn · Sicherheit</text>
+          <text x="130" y="152" text-anchor="middle" fill="#C0392B" font-size="7" font-weight="700">⚠ Mutter = Vorgesetzte</text>
+        </svg>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- #10 КРУГОВАЯ СХЕМА -->
+  <div style="margin-top:32px;">
+    <div style="font-size:20px;font-weight:800;margin-bottom:6px;" id="fin-circle-title">Kreisförmige Kontrollstruktur</div>
+    <div style="font-size:11px;color:#666;margin-bottom:20px;" id="fin-circle-sub">Außenring = Delegierte · Innenring = Familienangehörige auf Gehaltsliste · Zentrum = Vereinigungskasse</div>
+    <div style="background:#fff;padding:28px;display:flex;justify-content:center;">
+      <svg viewBox="0 0 600 600" style="width:100%;max-width:600px;display:block;">
+        <circle cx="300" cy="300" r="58" fill="#000" stroke="#E84A0C" stroke-width="3"/>
+        <text x="300" y="294" text-anchor="middle" fill="white" font-size="11" font-weight="700">Vereinigungs-</text>
+        <text x="300" y="308" text-anchor="middle" fill="white" font-size="11" font-weight="700">kasse</text>
+        <text x="300" y="322" text-anchor="middle" fill="#E84A0C" font-size="9">💰 Budget</text>
+        <circle cx="300" cy="185" r="32" fill="#C0392B" stroke="white" stroke-width="2"/>
+        <text x="300" y="181" text-anchor="middle" fill="white" font-size="7" font-weight="700">M. Malafi</text>
+        <text x="300" y="191" text-anchor="middle" fill="white" font-size="6">Sohn · Sicherheit</text>
+        <line x1="300" y1="217" x2="300" y2="242" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <circle cx="420" cy="220" r="30" fill="#C0392B" stroke="white" stroke-width="2"/>
+        <text x="420" y="216" text-anchor="middle" fill="white" font-size="7" font-weight="700">P. Suliman</text>
+        <text x="420" y="226" text-anchor="middle" fill="white" font-size="6">Cousin · Angest.</text>
+        <line x1="393" y1="238" x2="368" y2="258" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <circle cx="460" cy="340" r="30" fill="#C0392B" stroke="white" stroke-width="2"/>
+        <text x="460" y="336" text-anchor="middle" fill="white" font-size="7" font-weight="700">N. Albilia</text>
+        <text x="460" y="346" text-anchor="middle" fill="white" font-size="6">Sohn · Delegierter</text>
+        <line x1="430" y1="340" x2="358" y2="320" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <circle cx="380" cy="450" r="30" fill="#C0392B" stroke="white" stroke-width="2"/>
+        <text x="380" y="446" text-anchor="middle" fill="white" font-size="7" font-weight="700">Tochter Olga</text>
+        <text x="380" y="456" text-anchor="middle" fill="white" font-size="6">Angestellte</text>
+        <line x1="358" y1="425" x2="337" y2="358" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <circle cx="220" cy="450" r="30" fill="#C0392B" stroke="white" stroke-width="2"/>
+        <text x="220" y="446" text-anchor="middle" fill="white" font-size="7" font-weight="700">Sohn Scheinker</text>
+        <text x="220" y="456" text-anchor="middle" fill="white" font-size="6">Angestellter</text>
+        <line x1="242" y1="425" x2="263" y2="358" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <circle cx="140" cy="340" r="30" fill="#C0392B" stroke="white" stroke-width="2"/>
+        <text x="140" y="336" text-anchor="middle" fill="white" font-size="7" font-weight="700">N. Katz</text>
+        <text x="140" y="346" text-anchor="middle" fill="white" font-size="6">Sohn · Sicherheit</text>
+        <line x1="170" y1="340" x2="242" y2="320" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <circle cx="140" cy="220" r="28" fill="#C0392B" stroke="white" stroke-width="2"/>
+        <text x="140" y="216" text-anchor="middle" fill="white" font-size="7" font-weight="700">Söhne Benizri</text>
+        <text x="140" y="226" text-anchor="middle" fill="white" font-size="6">(2x, nicht best.)</text>
+        <line x1="165" y1="238" x2="232" y2="258" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <circle cx="300" cy="75" r="28" fill="#E84A0C" stroke="white" stroke-width="2"/>
+        <text x="300" y="71" text-anchor="middle" fill="white" font-size="7" font-weight="700">T. Malafi</text>
+        <text x="300" y="81" text-anchor="middle" fill="white" font-size="6">Delegierte</text>
+        <line x1="300" y1="103" x2="300" y2="153" stroke="#E84A0C" stroke-width="2"/>
+        <circle cx="490" cy="145" r="30" fill="#000" stroke="#E84A0C" stroke-width="2"/>
+        <text x="490" y="141" text-anchor="middle" fill="white" font-size="7" font-weight="700">Rami S.</text>
+        <text x="490" y="151" text-anchor="middle" fill="white" font-size="6">Vorsitzender</text>
+        <line x1="463" y1="163" x2="437" y2="200" stroke="#E84A0C" stroke-width="2"/>
+        <circle cx="535" cy="300" r="28" fill="#666" stroke="white" stroke-width="2"/>
+        <text x="535" y="296" text-anchor="middle" fill="white" font-size="7" font-weight="700">G. Albilia</text>
+        <text x="535" y="306" text-anchor="middle" fill="white" font-size="6">Vorstand</text>
+        <line x1="507" y1="300" x2="490" y2="320" stroke="#E84A0C" stroke-width="2"/>
+        <circle cx="460" cy="510" r="28" fill="#E84A0C" stroke="white" stroke-width="2"/>
+        <text x="460" y="506" text-anchor="middle" fill="white" font-size="6" font-weight="700">O. Maryanovskaya</text>
+        <text x="460" y="516" text-anchor="middle" fill="white" font-size="6">Delegierte</text>
+        <line x1="437" y1="494" x2="403" y2="476" stroke="#E84A0C" stroke-width="2"/>
+        <circle cx="140" cy="510" r="28" fill="#666" stroke="white" stroke-width="2"/>
+        <text x="140" y="506" text-anchor="middle" fill="white" font-size="7" font-weight="700">H. Scheinker</text>
+        <text x="140" y="516" text-anchor="middle" fill="white" font-size="6">Vorsitzende</text>
+        <line x1="163" y1="494" x2="197" y2="476" stroke="#E84A0C" stroke-width="2"/>
+        <circle cx="65" cy="300" r="28" fill="#666" stroke="white" stroke-width="2"/>
+        <text x="65" y="296" text-anchor="middle" fill="white" font-size="7" font-weight="700">I. Katz</text>
+        <text x="65" y="306" text-anchor="middle" fill="white" font-size="6">Vorsitzende</text>
+        <line x1="93" y1="300" x2="110" y2="320" stroke="#E84A0C" stroke-width="2"/>
+        <circle cx="110" cy="145" r="28" fill="#666" stroke="white" stroke-width="2"/>
+        <text x="110" y="141" text-anchor="middle" fill="white" font-size="7" font-weight="700">S. Benizri-W.</text>
+        <text x="110" y="151" text-anchor="middle" fill="white" font-size="6">Vorstand</text>
+        <line x1="137" y1="163" x2="163" y2="200" stroke="#E84A0C" stroke-width="2"/>
+        <text x="300" y="22" text-anchor="middle" fill="#E84A0C" font-size="9" font-weight="700">AUSSENRING: Delegierte / Vorstand</text>
+        <text x="300" y="580" text-anchor="middle" fill="#C0392B" font-size="9" font-weight="700">INNENRING: Familienangehörige auf Gehaltsliste</text>
+        <circle cx="300" cy="300" r="155" fill="none" stroke="#E84A0C" stroke-width="1" stroke-dasharray="6,4" stroke-opacity=".3"/>
+        <circle cx="300" cy="300" r="255" fill="none" stroke="#E84A0C" stroke-width="1" stroke-dasharray="6,4" stroke-opacity=".15"/>
+      </svg>
+    </div>
   </div>
 
   <!-- ФИНАНСОВОЕ НЕРАВЕНСТВО -->
   <div style="margin-top:32px;">
-    <div style="font-size:20px;font-weight:800;margin-bottom:6px;" id="fin-title">Finanzielle Diskriminierung · Бюджетное неравенство · Financial Discrimination</div>
+    <div style="font-size:20px;font-weight:800;margin-bottom:6px;" id="fin-title">Finanzielle Diskriminierung</div>
     <div style="font-size:11px;color:#666;margin-bottom:20px;">Zuschuss pro Mitglied 2025 · Warum bekommt die größte Gemeinde am wenigsten?</div>
-
-    <!-- KPI ФИНАНСЫ -->
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:#000;margin-bottom:2px;">
       <div style="background:#fff;padding:20px 24px;">
         <div style="font-size:42px;font-weight:900;color:#C0392B;line-height:1;">626€</div>
@@ -225,8 +527,6 @@
         <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:2px;">Ohne sachliche Grundlage</div>
       </div>
     </div>
-
-    <!-- ТАБЛИЦА БЮДЖЕТОВ -->
     <div style="background:#fff;padding:24px 28px;margin-bottom:2px;">
       <div style="font-size:10px;font-weight:700;letter-spacing:.2em;color:#E84A0C;text-transform:uppercase;margin-bottom:16px;border-left:3px solid #E84A0C;padding-left:10px;">Vergleich der Zuschüsse 2025</div>
       <table style="width:100%;border-collapse:collapse;font-size:11px;">
@@ -278,21 +578,16 @@
         </tbody>
       </table>
     </div>
-
-    <!-- СТИММЕТАНАЙЛ -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;background:#000;">
       <div style="background:#fff;padding:20px 24px;">
         <div style="font-size:10px;font-weight:700;letter-spacing:.2em;color:#E84A0C;text-transform:uppercase;margin-bottom:12px;border-left:3px solid #E84A0C;padding-left:10px;">Stimmenungleichgewicht</div>
         <svg viewBox="0 0 400 180" style="width:100%;display:block;">
-          <!-- 9 kleine Gemeinden -->
           <rect x="20" y="20" width="160" height="140" fill="#F5F5F0" stroke="#E0E0E0" stroke-width="1"/>
           <text x="100" y="45" text-anchor="middle" font-size="10" font-weight="700" fill="#000">9 kleine Gemeinden</text>
           <text x="100" y="62" text-anchor="middle" font-size="9" fill="#666">3.500 Mitglieder</text>
           <text x="100" y="100" text-anchor="middle" font-size="36" font-weight="900" fill="#000">18</text>
           <text x="100" y="118" text-anchor="middle" font-size="9" fill="#666">Stimmen</text>
           <text x="100" y="148" text-anchor="middle" font-size="11" font-weight="700" fill="#C0392B">86%</text>
-
-          <!-- Karlsruhe -->
           <rect x="220" y="20" width="160" height="140" fill="#FFF0F0" stroke="#C0392B" stroke-width="2"/>
           <text x="300" y="45" text-anchor="middle" font-size="10" font-weight="700" fill="#000">Karlsruhe</text>
           <text x="300" y="62" text-anchor="middle" font-size="9" fill="#666">fast 1.000 Mitglieder</text>
@@ -303,160 +598,23 @@
       </div>
       <div style="background:#000;padding:20px 24px;">
         <div style="font-size:10px;font-weight:700;letter-spacing:.2em;color:#E84A0C;text-transform:uppercase;margin-bottom:12px;">Key Finding</div>
-        <div style="font-size:13px;color:white;line-height:1.8;margin-bottom:12px;">🇩🇪 Die Stimme eines Mitglieds aus Rottweil (330 Mitglieder) zählt <strong style="color:#E84A0C;">10× mehr</strong> als die Stimme eines Mitglieds aus Karlsruhe (940 Mitglieder).</div>
-        <div style="font-size:13px;color:white;line-height:1.8;margin-bottom:12px;">🇬🇧 A vote from a small community counts <strong style="color:#E84A0C;">10× more</strong> than a vote from Karlsruhe — the largest community.</div>
-        <div style="font-size:13px;color:white;line-height:1.8;">🇷🇺 Голос члена из маленькой общины весит <strong style="color:#E84A0C;">в 10 раз больше</strong>, чем голос члена из Карлсруэ — самой большой общины.</div>
+        <div style="font-size:13px;color:white;line-height:1.8;" class="t" data-de='🇩🇪 Die Stimme eines Mitglieds aus Rottweil zählt <strong style="color:#E84A0C;">10× mehr</strong> als die Stimme eines Mitglieds aus Karlsruhe.' data-en='🇬🇧 A vote from a small community counts <strong style="color:#E84A0C;">10× more</strong> than a vote from Karlsruhe.' data-ru='🇷🇺 Голос члена из маленькой общины весит <strong style="color:#E84A0C;">в 10 раз больше</strong>, чем голос члена из Карлсруэ.'></div>
       </div>
     </div>
   </div>
 
-</div>
-  <div style="margin-top:32px;">
-    <div style="font-size:20px;font-weight:800;margin-bottom:6px;">Kreisförmige Kontrollstruktur</div>
-    <div style="font-size:11px;color:#666;margin-bottom:20px;">Außenring = Delegierte · Innenring = ihre Familienmitglieder auf der Gehaltsliste · Zentrum = Vereinigungskasse</div>
-    <div style="background:#fff;padding:28px;display:flex;justify-content:center;">
-      <svg viewBox="0 0 600 600" style="width:100%;max-width:600px;display:block;">
-
-        <!-- CENTER: Kasse -->
-        <circle cx="300" cy="300" r="58" fill="#000" stroke="#E84A0C" stroke-width="3"/>
-        <text x="300" y="294" text-anchor="middle" fill="white" font-size="11" font-weight="700">Vereinigungs-</text>
-        <text x="300" y="308" text-anchor="middle" fill="white" font-size="11" font-weight="700">kasse</text>
-        <text x="300" y="322" text-anchor="middle" fill="#E84A0C" font-size="9">💰 Budget</text>
-
-        <!-- INNER RING: Familienmitglieder auf Gehaltsliste -->
-        <!-- M.Malafi -->
-        <circle cx="300" cy="185" r="32" fill="#C0392B" stroke="white" stroke-width="2"/>
-        <text x="300" y="181" text-anchor="middle" fill="white" font-size="7" font-weight="700">M. Malafi</text>
-        <text x="300" y="191" text-anchor="middle" fill="white" font-size="6">Sohn · Sicherheit</text>
-        <line x1="300" y1="217" x2="300" y2="242" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,2"/>
-
-        <!-- P.Suliman -->
-        <circle cx="420" cy="220" r="30" fill="#C0392B" stroke="white" stroke-width="2"/>
-        <text x="420" y="216" text-anchor="middle" fill="white" font-size="7" font-weight="700">P. Suliman</text>
-        <text x="420" y="226" text-anchor="middle" fill="white" font-size="6">Cousin · Angest.</text>
-        <line x1="393" y1="238" x2="368" y2="258" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,2"/>
-
-        <!-- N.Albilia -->
-        <circle cx="460" cy="340" r="30" fill="#C0392B" stroke="white" stroke-width="2"/>
-        <text x="460" y="336" text-anchor="middle" fill="white" font-size="7" font-weight="700">N. Albilia</text>
-        <text x="460" y="346" text-anchor="middle" fill="white" font-size="6">Sohn · Delegierter</text>
-        <line x1="430" y1="340" x2="358" y2="320" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,2"/>
-
-        <!-- Tochter Olga -->
-        <circle cx="380" cy="450" r="30" fill="#C0392B" stroke="white" stroke-width="2"/>
-        <text x="380" y="446" text-anchor="middle" fill="white" font-size="7" font-weight="700">Tochter</text>
-        <text x="380" y="456" text-anchor="middle" fill="white" font-size="6">Olgas · Angest.</text>
-        <line x1="358" y1="425" x2="337" y2="358" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,2"/>
-
-        <!-- Sohn Scheinker -->
-        <circle cx="220" cy="450" r="30" fill="#C0392B" stroke="white" stroke-width="2"/>
-        <text x="220" y="446" text-anchor="middle" fill="white" font-size="7" font-weight="700">Sohn</text>
-        <text x="220" y="456" text-anchor="middle" fill="white" font-size="6">Scheinker · Angest.</text>
-        <line x1="242" y1="425" x2="263" y2="358" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,2"/>
-
-        <!-- N.Katz -->
-        <circle cx="140" cy="340" r="30" fill="#C0392B" stroke="white" stroke-width="2"/>
-        <text x="140" y="336" text-anchor="middle" fill="white" font-size="7" font-weight="700">N. Katz</text>
-        <text x="140" y="346" text-anchor="middle" fill="white" font-size="6">Sohn · Sicherheit</text>
-        <line x1="170" y1="340" x2="242" y2="320" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,2"/>
-
-        <!-- Sohn Benizri x2 -->
-        <circle cx="140" cy="220" r="28" fill="#C0392B" stroke="white" stroke-width="2"/>
-        <text x="140" y="216" text-anchor="middle" fill="white" font-size="7" font-weight="700">Söhne</text>
-        <text x="140" y="226" text-anchor="middle" fill="white" font-size="6">Benizri (2x?)</text>
-        <line x1="165" y1="238" x2="232" y2="258" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="3,2"/>
-
-        <!-- OUTER RING: Delegierte -->
-        <!-- T.Malafi -->
-        <circle cx="300" cy="75" r="28" fill="#E84A0C" stroke="white" stroke-width="2"/>
-        <text x="300" y="71" text-anchor="middle" fill="white" font-size="7" font-weight="700">T. Malafi</text>
-        <text x="300" y="81" text-anchor="middle" fill="white" font-size="6">Delegierte</text>
-        <line x1="300" y1="103" x2="300" y2="153" stroke="#E84A0C" stroke-width="2"/>
-
-        <!-- Rami S -->
-        <circle cx="490" cy="145" r="30" fill="#000" stroke="#E84A0C" stroke-width="2"/>
-        <text x="490" y="141" text-anchor="middle" fill="white" font-size="7" font-weight="700">Rami S.</text>
-        <text x="490" y="151" text-anchor="middle" fill="white" font-size="6">Vorsitzender</text>
-        <line x1="463" y1="163" x2="437" y2="200" stroke="#E84A0C" stroke-width="2"/>
-
-        <!-- G.Albilia -->
-        <circle cx="535" cy="300" r="28" fill="#666" stroke="white" stroke-width="2"/>
-        <text x="535" y="296" text-anchor="middle" fill="white" font-size="7" font-weight="700">G. Albilia</text>
-        <text x="535" y="306" text-anchor="middle" fill="white" font-size="6">Vorstand</text>
-        <line x1="507" y1="300" x2="490" y2="320" stroke="#E84A0C" stroke-width="2"/>
-
-        <!-- O.Maryanovskaya -->
-        <circle cx="460" cy="510" r="28" fill="#E84A0C" stroke="white" stroke-width="2"/>
-        <text x="460" y="506" text-anchor="middle" fill="white" font-size="6" font-weight="700">O. Maryan.</text>
-        <text x="460" y="516" text-anchor="middle" fill="white" font-size="6">Delegierte</text>
-        <line x1="437" y1="494" x2="403" y2="476" stroke="#E84A0C" stroke-width="2"/>
-
-        <!-- H.Scheinker -->
-        <circle cx="140" cy="510" r="28" fill="#666" stroke="white" stroke-width="2"/>
-        <text x="140" y="506" text-anchor="middle" fill="white" font-size="7" font-weight="700">H. Scheinker</text>
-        <text x="140" y="516" text-anchor="middle" fill="white" font-size="6">Vorsitzende</text>
-        <line x1="163" y1="494" x2="197" y2="476" stroke="#E84A0C" stroke-width="2"/>
-
-        <!-- I.Katz -->
-        <circle cx="65" cy="300" r="28" fill="#666" stroke="white" stroke-width="2"/>
-        <text x="65" y="296" text-anchor="middle" fill="white" font-size="7" font-weight="700">I. Katz</text>
-        <text x="65" y="306" text-anchor="middle" fill="white" font-size="6">Vorsitzende</text>
-        <line x1="93" y1="300" x2="110" y2="320" stroke="#E84A0C" stroke-width="2"/>
-
-        <!-- S.Benizri -->
-        <circle cx="110" cy="145" r="28" fill="#666" stroke="white" stroke-width="2"/>
-        <text x="110" y="141" text-anchor="middle" fill="white" font-size="7" font-weight="700">S. Benizri-W.</text>
-        <text x="110" y="151" text-anchor="middle" fill="white" font-size="6">Vorstand</text>
-        <line x1="137" y1="163" x2="163" y2="200" stroke="#E84A0C" stroke-width="2"/>
-
-        <!-- RING LABELS -->
-        <text x="300" y="22" text-anchor="middle" fill="#E84A0C" font-size="9" font-weight="700">AUSSENRING: Delegierte / Vorstand</text>
-        <text x="300" y="580" text-anchor="middle" fill="#C0392B" font-size="9" font-weight="700">INNENRING: Familienmitglieder auf Gehaltsliste</text>
-
-        <!-- dashed ring guides -->
-        <circle cx="300" cy="300" r="155" fill="none" stroke="#E84A0C" stroke-width="1" stroke-dasharray="6,4" stroke-opacity=".3"/>
-        <circle cx="300" cy="300" r="255" fill="none" stroke="#E84A0C" stroke-width="1" stroke-dasharray="6,4" stroke-opacity=".15"/>
-
-      </svg>
-    </div>
+  <div class="footer">
+    <div><span id="t-footer-l">Transparente Faire Wahlen</span> · März 2026</div>
+    <div>Wahl: 22.03.2026</div>
   </div>
 
 </div>
 
-<div class="tt" id="tt"></div>
-
 <script>
 const LANG = {
-  de: {
-    eyebrow:"Transparente Faire Wahlen",
-    title:"Netz der Kontrolle", sub:"Nepotismus · Interessenkonflikte · Strukturelle Wahlmanipulation",
-    badge:"Demokratisches Defizit", kpi1:"Städte mit Nepotismus", kpi2:"Familiäre Verflechtungen",
-    kpi3:"Kontrollierte Stimmen", kpi4:"Unabhängige Prüfer", gEye:"Netz der Kontrolle",
-    gTitle:"Struktureller Nepotismus: Wer kontrolliert wen?",
-    gSub:"Jede Linie = familiäre Bindung oder Interessenkonflikt. Rot = direkte Wahlmanipulation. Orange = Vorgesetzte/r prüft eigene Familie.",
-    l1:"Delegierter", l2:"Angestellter", l3:"Doppelrolle", l4:"Eltern/Kind", l5:"Interessenkonflikt",
-    cardsTitle:"Interessenkonflikte nach Stadt"
-  },
-  en: {
-    eyebrow:"Transparent Fair Elections",
-    title:"Web of Control", sub:"Nepotism · Conflicts of Interest · Structural Electoral Manipulation",
-    badge:"Democratic Deficit", kpi1:"Cities with Nepotism", kpi2:"Family Entanglements",
-    kpi3:"Controlled Votes", kpi4:"Independent Auditors", gEye:"Web of Control",
-    gTitle:"Structural Nepotism: Who Controls Whom?",
-    gSub:"Each line = family tie or conflict of interest. Red = direct electoral manipulation. Orange = supervisor audits own family.",
-    l1:"Delegate", l2:"Employee", l3:"Dual Role", l4:"Parent/Child", l5:"Conflict of Interest",
-    cardsTitle:"Conflicts of Interest by City"
-  },
-  ru: {
-    eyebrow:"Прозрачные Честные Выборы",
-    title:"Паутина контроля", sub:"Непотизм · Конфликты интересов · Структурная манипуляция выборами",
-    badge:"Дефицит демократии", kpi1:"Городов с непотизмом", kpi2:"Семейных переплетений",
-    kpi3:"Контролируемых голосов", kpi4:"Независимых проверяющих", gEye:"Паутина контроля",
-    gTitle:"Структурный непотизм: кто кого контролирует?",
-    gSub:"Каждая линия = семейная связь или конфликт интересов. Красный = прямая манипуляция выборами.",
-    l1:"Делегат", l2:"Сотрудник", l3:"Двойная роль", l4:"Родитель/Ребёнок", l5:"Конфликт интересов",
-    cardsTitle:"Конфликты интересов по городам"
-  }
+  de: { eyebrow:"Transparente Faire Wahlen", title:"Netz der Kontrolle", sub:"Nepotismus · Interessenkonflikte · Strukturelle Wahlmanipulation", badge:"Demokratisches Defizit", kpi1:"Städte mit Nepotismus", kpi2:"Familiäre Verflechtungen", kpi3:"Kontrollierte Stimmen", kpi4:"Unabhängige Prüfer", gEye:"Netz der Kontrolle", gTitle:"Struktureller Nepotismus: Wer kontrolliert wen?", gSub:"Jede Linie = familiäre Bindung oder Interessenkonflikt. Rot = direkte Wahlmanipulation.", l1:"Delegierter", l2:"Angestellter", l3:"Doppelrolle", l4:"Eltern/Kind", l5:"Interessenkonflikt", cardsTitle:"Interessenkonflikte nach Stadt", fcTitle:"Familiäre Cluster nach Stadt", footerL:"Transparente Faire Wahlen" },
+  en: { eyebrow:"Transparent Fair Elections", title:"Web of Control", sub:"Nepotism · Conflicts of Interest · Structural Electoral Manipulation", badge:"Democratic Deficit", kpi1:"Cities with Nepotism", kpi2:"Family Entanglements", kpi3:"Controlled Votes", kpi4:"Independent Auditors", gEye:"Web of Control", gTitle:"Structural Nepotism: Who Controls Whom?", gSub:"Each line = family tie or conflict of interest. Red = direct electoral manipulation.", l1:"Delegate", l2:"Employee", l3:"Dual Role", l4:"Parent/Child", l5:"Conflict of Interest", cardsTitle:"Conflicts of Interest by City", fcTitle:"Family Clusters by City", footerL:"Transparent Fair Elections" },
+  ru: { eyebrow:"Прозрачные Честные Выборы", title:"Паутина контроля", sub:"Непотизм · Конфликты интересов · Структурная манипуляция выборами", badge:"Дефицит демократии", kpi1:"Городов с непотизмом", kpi2:"Семейных переплетений", kpi3:"Контролируемых голосов", kpi4:"Независимых проверяющих", gEye:"Паутина контроля", gTitle:"Структурный непотизм: кто кого контролирует?", gSub:"Каждая линия = семейная связь или конфликт интересов. Красный = прямая манипуляция выборами.", l1:"Делегат", l2:"Сотрудник", l3:"Двойная роль", l4:"Родитель/Ребёнок", l5:"Конфликт интересов", cardsTitle:"Конфликты интересов по городам", fcTitle:"Семейные кластеры по городам", footerL:"Прозрачные Честные Выборы" }
 };
 
 function setLang(lang, btn) {
@@ -478,7 +636,8 @@ function setLang(lang, btn) {
   document.getElementById("l4").textContent = L.l4;
   document.getElementById("l5").textContent = L.l5;
   document.getElementById("cards-title").textContent = L.cardsTitle;
-  // update all .t spans
+  document.getElementById("fc-title").textContent = L.fcTitle;
+  document.getElementById("t-footer-l").textContent = L.footerL;
   document.querySelectorAll('.t').forEach(el => {
     const val = el.getAttribute('data-'+lang);
     if(val !== null) el.innerHTML = val;
@@ -486,99 +645,7 @@ function setLang(lang, btn) {
   document.querySelectorAll('.flag-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 }
-
 setLang('de', document.querySelector('.flag-btn.active'));
-
-// ── D3 ────────────────────────────────────────────────────────────────────────
-const svg = d3.select("#web-svg");
-const el = document.getElementById("web-svg");
-const W = el.clientWidth||1000, H=520;
-svg.attr("viewBox",`0 0 ${W} ${H}`);
-
-const gb=svg.append("g");
-for(let x=0;x<W;x+=50) gb.append("line").attr("x1",x).attr("y1",0).attr("x2",x).attr("y2",H).attr("stroke","#E0E0E0").attr("stroke-width",.5);
-for(let y=0;y<H;y+=50) gb.append("line").attr("x1",0).attr("y1",y).attr("x2",W).attr("y2",y).attr("stroke","#E0E0E0").attr("stroke-width",.5);
-
-const nodes=[
-  {id:"center",  label:"Zentrum",          color:"#000",    r:30},
-  {id:"tatjana", label:"T. Malafi",         color:"#C0392B", r:18, dual:true},
-  {id:"michael", label:"M. Malafi",         color:"#C0392B", r:16, dual:true},
-  {id:"viktoria",label:"V. Schwedchenko",   color:"#E84A0C", r:13},
-  {id:"rami",    label:"Rami S.",           color:"#000",    r:22},
-  {id:"pinchas", label:"P. Suliman",        color:"#666",    r:12},
-  {id:"gabriel", label:"G. Albilia",        color:"#666",    r:14},
-  {id:"nadav",   label:"N. Albilia",        color:"#E84A0C", r:13},
-  {id:"suzanne", label:"S. Benizri-W.",     color:"#666",    r:14},
-  {id:"sohn1",   label:"Sohn 1",            color:"#aaa",    r:10},
-  {id:"sohn2",   label:"Sohn 2",            color:"#aaa",    r:10},
-  {id:"olga",    label:"O. Maryanovskaya", color:"#E84A0C", r:14},
-  {id:"tochter", label:"Tochter",           color:"#666",    r:11},
-  {id:"ruslan",  label:"R. Manaschirov",    color:"#C0392B", r:13, dual:true},
-  {id:"hanna",   label:"H. Scheinker",      color:"#666",    r:14},
-  {id:"sohn_h",  label:"Sohn",             color:"#666",    r:11},
-  {id:"irina",   label:"I. Katz",           color:"#666",    r:14},
-  {id:"nikita",  label:"N. Katz",           color:"#666",    r:11},
-];
-
-const links=[
-  {s:"rami",t:"center",tp:"ctrl"},{s:"tatjana",t:"center",tp:"ctrl"},
-  {s:"gabriel",t:"center",tp:"ctrl"},{s:"nadav",t:"center",tp:"ctrl"},
-  {s:"olga",t:"center",tp:"ctrl"},{s:"ruslan",t:"center",tp:"ctrl"},
-  {s:"viktoria",t:"center",tp:"ctrl"},{s:"suzanne",t:"center",tp:"ctrl"},
-  {s:"tatjana",t:"michael",tp:"par"},{s:"tatjana",t:"viktoria",tp:"sib"},
-  {s:"michael",t:"tatjana",tp:"con"},{s:"rami",t:"pinchas",tp:"par"},
-  {s:"gabriel",t:"nadav",tp:"par"},{s:"suzanne",t:"sohn1",tp:"par"},
-  {s:"suzanne",t:"sohn2",tp:"par"},{s:"olga",t:"tochter",tp:"par"},
-  {s:"hanna",t:"sohn_h",tp:"par"},{s:"irina",t:"nikita",tp:"par"},
-];
-
-const LC={ctrl:"#E84A0C",par:"#000",sib:"rgba(0,0,0,.25)",con:"#C0392B"};
-const LD={ctrl:"6,4",par:null,sib:"4,3",con:null};
-const LW={ctrl:1.5,par:2,sib:1,con:2.5};
-
-const defs=svg.append("defs");
-Object.entries(LC).forEach(([k,v])=>{
-  defs.append("marker").attr("id","m"+k).attr("viewBox","0 -5 10 10").attr("refX",22).attr("refY",0).attr("markerWidth",5).attr("markerHeight",5).attr("orient","auto")
-    .append("path").attr("d","M0,-5L10,0L0,5").attr("fill",v);
-});
-
-const sN=nodes.map(n=>({...n}));
-const sL=links.map(l=>({source:l.s,target:l.t,tp:l.tp}));
-
-const sim=d3.forceSimulation(sN)
-  .force("link",d3.forceLink(sL).id(d=>d.id).distance(d=>({ctrl:190,par:75,sib:65,con:80})[d.tp]||100).strength(.8))
-  .force("charge",d3.forceManyBody().strength(-320))
-  .force("center",d3.forceCenter(W/2,H/2))
-  .force("collision",d3.forceCollide(d=>d.r+16));
-
-const lG=svg.append("g").selectAll("line").data(sL).enter().append("line")
-  .attr("stroke",d=>LC[d.tp]).attr("stroke-width",d=>LW[d.tp])
-  .attr("stroke-dasharray",d=>LD[d.tp]).attr("stroke-opacity",.8)
-  .attr("marker-end",d=>`url(#m${d.tp})`);
-
-const nG=svg.append("g").selectAll("g").data(sN).enter().append("g").attr("cursor","pointer")
-  .call(d3.drag()
-    .on("start",(e,d)=>{if(!e.active)sim.alphaTarget(.3).restart();d.fx=d.x;d.fy=d.y;})
-    .on("drag",(e,d)=>{d.fx=e.x;d.fy=e.y;})
-    .on("end",(e,d)=>{if(!e.active)sim.alphaTarget(0);d.fx=null;d.fy=null;})
-  );
-
-nG.filter(d=>d.dual).append("circle").attr("r",d=>d.r+7).attr("fill","none").attr("stroke","#C0392B").attr("stroke-width",1.5).attr("stroke-dasharray","3,3").attr("stroke-opacity",.5);
-nG.filter(d=>d.id==="center").append("circle").attr("r",42).attr("fill","none").attr("stroke","#E84A0C").attr("stroke-width",1.5).attr("stroke-opacity",.3);
-nG.filter(d=>d.id!=="center").append("circle").attr("r",d=>d.r).attr("fill",d=>d.color).attr("stroke","white").attr("stroke-width",2);
-nG.filter(d=>d.id==="center").append("rect").attr("x",-38).attr("y",-18).attr("width",76).attr("height",36).attr("fill","#000").attr("stroke","#E84A0C").attr("stroke-width",2);
-nG.append("text").attr("text-anchor","middle").attr("dy","0.35em").style("font-size",d=>d.id==="center"?"9px":"8px").style("font-weight","700").style("fill","white").text(d=>d.label.length>12?d.label.slice(0,11)+"…":d.label);
-nG.append("text").attr("text-anchor","middle").attr("dy",d=>d.r+12).style("font-size","7px").style("fill","#444").text(d=>d.id!=="center"?d.label.split(" ").slice(-1)[0]:"");
-
-const tt=document.getElementById("tt");
-nG.on("mouseover",(e,d)=>{tt.textContent=d.label;tt.style.opacity="1";})
-  .on("mousemove",e=>{tt.style.left=(e.clientX+14)+"px";tt.style.top=(e.clientY-10)+"px";})
-  .on("mouseout",()=>{tt.style.opacity="0";});
-
-sim.on("tick",()=>{
-  lG.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y).attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
-  nG.attr("transform",d=>`translate(${Math.max(d.r+5,Math.min(W-d.r-5,d.x))},${Math.max(d.r+15,Math.min(H-d.r-15,d.y))})`);
-});
 </script>
 </body>
 </html>
