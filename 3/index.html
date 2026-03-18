@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karlsruhe Ultra-Cheap Energy System</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap');
+
+:root {
+–teal: #a8edea;
+–teal-dark: #5ecfc9;
+–blue: #5b9cff;
+–orange: #ffb347;
+–lime: #8cff66;
+–bg: #f7f9fb;
+–dark: #0d1117;
+–panel: #ffffff;
+–border: #e2e8f0;
+–text: #1a202c;
+–muted: #64748b;
+–grid: rgba(168,237,234,0.15);
+–nuclear: #5b9cff;
+–wind: #8cff66;
+–solar: #ffb347;
+–waste: #a8edea;
+–hydro: #5ecfc9;
+}
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+font-family: ‘Syne’, sans-serif;
+background: var(–bg);
+color: var(–text);
+min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+background: var(–dark);
+padding: 0 40px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+height: 70px;
+position: sticky;
+top: 0;
+z-index: 100;
+border-bottom: 2px solid var(–teal-dark);
+}
+
+.header-left {
+display: flex;
+align-items: center;
+gap: 16px;
+}
+
+.logo-dot {
+width: 10px; height: 10px;
+border-radius: 50%;
+background: var(–teal);
+box-shadow: 0 0 12px var(–teal);
+animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+0%,100% { box-shadow: 0 0 12px var(–teal); }
+50% { box-shadow: 0 0 24px var(–teal), 0 0 40px var(–teal-dark); }
+}
+
+.header-title {
+font-size: 14px;
+font-weight: 700;
+color: #fff;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+}
+
+.header-sub {
+font-size: 10px;
+color: var(–teal);
+letter-spacing: 0.2em;
+font-family: ‘Space Mono’, monospace;
+}
+
+/* LANGUAGE SWITCHER */
+.lang-switcher {
+display: flex;
+align-items: center;
+gap: 8px;
+background: rgba(255,255,255,0.05);
+border: 1px solid rgba(168,237,234,0.3);
+border-radius: 40px;
+padding: 6px 8px;
+}
+
+.lang-btn {
+display: flex;
+align-items: center;
+gap: 6px;
+padding: 6px 14px;
+border-radius: 30px;
+border: none;
+cursor: pointer;
+font-family: ‘Syne’, sans-serif;
+font-size: 12px;
+font-weight: 700;
+letter-spacing: 0.08em;
+transition: all 0.3s ease;
+background: transparent;
+color: rgba(255,255,255,0.5);
+}
+
+.lang-btn .flag {
+font-size: 18px;
+line-height: 1;
+}
+
+.lang-btn.active {
+background: var(–teal-dark);
+color: var(–dark);
+}
+
+.lang-btn:hover:not(.active) {
+background: rgba(168,237,234,0.15);
+color: var(–teal);
+}
+
+/* HERO STRIP */
+.hero {
+background: linear-gradient(135deg, #0d1117 0%, #0f2027 50%, #1a0a2e 100%);
+padding: 48px 40px 40px;
+position: relative;
+overflow: hidden;
+}
+
+.hero::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse at 20% 50%, rgba(168,237,234,0.08) 0%, transparent 60%),
+radial-gradient(ellipse at 80% 20%, rgba(91,156,255,0.08) 0%, transparent 60%);
+}
+
+.hero-inner {
+position: relative;
+max-width: 1400px;
+margin: 0 auto;
+}
+
+.hero-label {
+font-family: ‘Space Mono’, monospace;
+font-size: 10px;
+color: var(–teal);
+letter-spacing: 0.3em;
+text-transform: uppercase;
+margin-bottom: 12px;
+}
+
+.hero-title {
+font-size: clamp(28px, 4vw, 48px);
+font-weight: 800;
+color: #fff;
+line-height: 1.1;
+margin-bottom: 8px;
+}
+
+.hero-title span { color: var(–teal); }
+
+.hero-desc {
+font-size: 14px;
+color: rgba(255,255,255,0.5);
+max-width: 600px;
+line-height: 1.6;
+margin-bottom: 36px;
+}
+
+/* KPI CARDS */
+.kpi-row {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+gap: 16px;
+margin-top: 0;
+}
+
+.kpi {
+background: rgba(255,255,255,0.04);
+border: 1px solid rgba(168,237,234,0.2);
+border-radius: 12px;
+padding: 18px 20px;
+position: relative;
+overflow: hidden;
+transition: all 0.3s;
+}
+
+.kpi:hover { border-color: var(–teal-dark); background: rgba(168,237,234,0.06); }
+
+.kpi-label {
+font-family: ‘Space Mono’, monospace;
+font-size: 9px;
+color: rgba(255,255,255,0.4);
+letter-spacing: 0.2em;
+text-transform: uppercase;
+margin-bottom: 8px;
+}
+
+.kpi-value {
+font-size: 26px;
+font-weight: 800;
+color: var(–teal);
+line-height: 1;
+margin-bottom: 4px;
+}
+
+.kpi-unit {
+font-family: ‘Space Mono’, monospace;
+font-size: 10px;
+color: rgba(255,255,255,0.4);
+}
+
+.kpi-bar {
+position: absolute;
+bottom: 0; left: 0;
+height: 2px;
+background: var(–teal-dark);
+width: var(–pct, 60%);
+opacity: 0.6;
+}
+
+/* MAIN GRID */
+.main {
+max-width: 1400px;
+margin: 0 auto;
+padding: 40px;
+}
+
+.section-title {
+font-family: ‘Space Mono’, monospace;
+font-size: 10px;
+letter-spacing: 0.3em;
+text-transform: uppercase;
+color: var(–teal-dark);
+margin-bottom: 24px;
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+.section-title::after {
+content: ‘’;
+flex: 1;
+height: 1px;
+background: var(–border);
+}
+
+.charts-grid {
+display: grid;
+gap: 20px;
+}
+
+.row-2 { grid-template-columns: 1fr 1fr; }
+.row-3 { grid-template-columns: 1fr 1fr 1fr; }
+.row-32 { grid-template-columns: 3fr 2fr; }
+.row-23 { grid-template-columns: 2fr 3fr; }
+.row-1 { grid-template-columns: 1fr; }
+
+.chart-card {
+background: var(–panel);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 24px;
+position: relative;
+transition: all 0.3s;
+overflow: hidden;
+}
+
+.chart-card::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 3px;
+background: linear-gradient(90deg, var(–teal), var(–blue));
+opacity: 0;
+transition: opacity 0.3s;
+}
+
+.chart-card:hover { box-shadow: 0 8px 32px rgba(168,237,234,0.12); }
+.chart-card:hover::before { opacity: 1; }
+
+.card-title {
+font-size: 13px;
+font-weight: 700;
+color: var(–text);
+margin-bottom: 4px;
+}
+
+.card-sub {
+font-family: ‘Space Mono’, monospace;
+font-size: 9px;
+color: var(–muted);
+letter-spacing: 0.15em;
+margin-bottom: 20px;
+}
+
+.chart-wrap {
+position: relative;
+}
+
+/* SCENARIO TABS */
+.scenario-pills {
+display: flex;
+gap: 6px;
+margin-bottom: 16px;
+flex-wrap: wrap;
+}
+
+.pill {
+padding: 4px 12px;
+border-radius: 20px;
+font-size: 10px;
+font-weight: 700;
+letter-spacing: 0.08em;
+cursor: pointer;
+border: 1px solid var(–border);
+background: transparent;
+font-family: ‘Syne’, sans-serif;
+transition: all 0.2s;
+color: var(–muted);
+}
+
+.pill.active { background: var(–teal-dark); color: var(–dark); border-color: var(–teal-dark); }
+
+/* COMPARISON TABLE */
+.compare-table {
+width: 100%;
+border-collapse: collapse;
+font-size: 13px;
+}
+
+.compare-table th {
+text-align: left;
+padding: 10px 12px;
+font-family: ‘Space Mono’, monospace;
+font-size: 9px;
+letter-spacing: 0.15em;
+color: var(–muted);
+border-bottom: 1px solid var(–border);
+font-weight: 400;
+}
+
+.compare-table td {
+padding: 10px 12px;
+border-bottom: 1px solid rgba(226,232,240,0.5);
+font-weight: 600;
+}
+
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:hover td { background: rgba(168,237,234,0.04); }
+
+.price-bar-wrap { display: flex; align-items: center; gap: 8px; }
+.price-bar { height: 6px; border-radius: 3px; background: var(–teal-dark); }
+.price-val { font-family: ‘Space Mono’, monospace; font-size: 11px; color: var(–text); min-width: 80px; }
+
+/* SANKEY */
+#sankey-svg { width: 100%; }
+
+/* HEATMAP */
+.heatmap-grid {
+display: grid;
+gap: 3px;
+}
+
+.hm-cell {
+border-radius: 4px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: ‘Space Mono’, monospace;
+font-size: 9px;
+font-weight: 700;
+cursor: default;
+transition: transform 0.15s;
+}
+
+.hm-cell:hover { transform: scale(1.1); z-index: 5; position: relative; }
+
+/* WATERFALL */
+.waterfall-wrap { overflow-x: auto; }
+
+/* TIMELINE */
+.timeline { position: relative; }
+.tl-line {
+position: absolute;
+left: 24px; top: 0; bottom: 0;
+width: 2px;
+background: linear-gradient(to bottom, var(–teal), var(–blue));
+}
+.tl-item {
+display: flex;
+gap: 20px;
+padding: 0 0 28px 56px;
+position: relative;
+}
+.tl-dot {
+position: absolute;
+left: 16px;
+width: 18px; height: 18px;
+border-radius: 50%;
+background: var(–teal-dark);
+border: 3px solid var(–bg);
+display: flex; align-items: center; justify-content: center;
+z-index: 1;
+}
+.tl-dot::after {
+content: ‘’;
+width: 6px; height: 6px;
+border-radius: 50%;
+background: var(–dark);
+}
+.tl-content { flex: 1; }
+.tl-year {
+font-family: ‘Space Mono’, monospace;
+font-size: 10px;
+color: var(–teal-dark);
+font-weight: 700;
+margin-bottom: 4px;
+}
+.tl-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.tl-text { font-size: 11px; color: var(–muted); line-height: 1.5; }
+.tl-badge {
+display: inline-block;
+background: rgba(168,237,234,0.15);
+color: var(–teal-dark);
+border-radius: 4px;
+padding: 2px 8px;
+font-family: ‘Space Mono’, monospace;
+font-size: 9px;
+font-weight: 700;
+margin-top: 6px;
+}
+
+/* GAUGE */
+.gauges-row { display: flex; gap: 20px; justify-content: space-around; flex-wrap: wrap; }
+.gauge-wrap { text-align: center; }
+.gauge-label { font-size: 11px; font-weight: 700; margin-top: 8px; }
+.gauge-val { font-family: ‘Space Mono’, monospace; font-size: 13px; color: var(–teal-dark); }
+
+/* FOOTER */
+.footer {
+background: var(–dark);
+color: rgba(255,255,255,0.3);
+text-align: center;
+padding: 24px;
+font-family: ‘Space Mono’, monospace;
+font-size: 10px;
+letter-spacing: 0.15em;
+margin-top: 60px;
+}
+
+.footer span { color: var(–teal); }
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+.kpi-row { grid-template-columns: repeat(3, 1fr); }
+.row-3 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+.header { padding: 0 20px; }
+.main { padding: 20px; }
+.kpi-row { grid-template-columns: repeat(2, 1fr); }
+.row-2, .row-32, .row-23 { grid-template-columns: 1fr; }
+.row-3 { grid-template-columns: 1fr; }
+.hero { padding: 30px 20px; }
+}
+
+/* LANG HIDDEN */
+[data-lang=“de”] { display: none; }
+body.de [data-lang=“de”] { display: block; }
+body.de [data-lang=“en”] { display: none; }
+body.de [data-lang-inline=“de”] { display: inline; }
+body.de [data-lang-inline=“en”] { display: none; }
+[data-lang-inline=“de”] { display: none; }
+</style>
+
+</head>
+<body class="en" id="body">
+
+<!-- HEADER -->
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo-dot"></div>
+    <div>
+      <div class="header-title">BLACKSPACE · Energy Intelligence</div>
+      <div class="header-sub">Karlsruhe · Baden-Württemberg · Germany</div>
+    </div>
+  </div>
+  <div class="lang-switcher">
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">
+      <span class="flag">🇺🇸</span> EN
+    </button>
+    <button class="lang-btn" id="btn-de" onclick="setLang('de')">
+      <span class="flag">🇩🇪</span> DE
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">Strategic Energy Intelligence · Decision Dataset 2025–2045</div>
+    <h1 class="hero-title" data-lang="en">Karlsruhe <span>Ultra-Cheap</span><br>Energy System</h1>
+    <h1 class="hero-title" data-lang="de">Karlsruhe <span>Ultra-Billiges</span><br>Energiesystem</h1>
+    <p class="hero-desc" data-lang="en">Comprehensive analysis of next-generation sovereign energy infrastructure for AGI clusters and the city of Karlsruhe — achieving sub-0.015 €/kWh for citizens and 0.003 €/kWh for compute infrastructure.</p>
+    <p class="hero-desc" data-lang="de">Umfassende Analyse der nächsten Generation souveräner Energieinfrastruktur für AGI-Cluster und die Stadt Karlsruhe — mit dem Ziel von unter 0,015 €/kWh für Bürger und 0,003 €/kWh für Recheninfrastruktur.</p>
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-label" data-lang="en">AGI Target Price</div>
+        <div class="kpi-label" data-lang="de">AGI-Zielpreis</div>
+        <div class="kpi-value">0.003</div>
+        <div class="kpi-unit">€/kWh</div>
+        <div class="kpi-bar" style="--pct:6%"></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label" data-lang="en">Citizen Target</div>
+        <div class="kpi-label" data-lang="de">Bürgerziel</div>
+        <div class="kpi-value">0.015</div>
+        <div class="kpi-unit">€/kWh</div>
+        <div class="kpi-bar" style="--pct:33%"></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label" data-lang="en">AGI Max Demand</div>
+        <div class="kpi-label" data-lang="de">AGI-Maxbedarf</div>
+        <div class="kpi-value">750</div>
+        <div class="kpi-unit">MW peak</div>
+        <div class="kpi-bar" style="--pct:75%"></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label" data-lang="en">System Reliability</div>
+        <div class="kpi-label" data-lang="de">Systemzuverlässigkeit</div>
+        <div class="kpi-value">99.999</div>
+        <div class="kpi-unit">% cluster uptime</div>
+        <div class="kpi-bar" style="--pct:100%"></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label" data-lang="en">Optimal Investment</div>
+        <div class="kpi-label" data-lang="de">Optimalinvestition</div>
+        <div class="kpi-value">4B</div>
+        <div class="kpi-unit">€ scenario</div>
+        <div class="kpi-bar" style="--pct:40%"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+  <!-- SECTION 1 -->
+
+  <div class="section-title" data-lang="en">01 · Energy Prices & Scenarios</div>
+  <div class="section-title" data-lang="de">01 · Energiepreise & Szenarien</div>
+
+  <div class="charts-grid row-2" style="margin-bottom:20px">
+    <!-- Chart 1: Energy Price by Scenario -->
+    <div class="chart-card">
+      <div class="card-title" data-lang="en">1 · Energy Price by Scenario</div>
+      <div class="card-title" data-lang="de">1 · Energiepreis nach Szenario</div>
+      <div class="card-sub">€/kWh · NUCLEAR / HYBRID / RENEWABLE</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chart1"></canvas>
+      </div>
+    </div>
+
+```
+<!-- Chart 4: AGI Energy Price -->
+<div class="chart-card">
+  <div class="card-title" data-lang="en">4 · AGI Cluster Energy Price</div>
+  <div class="card-title" data-lang="de">4 · AGI-Cluster Energiepreis</div>
+  <div class="card-sub">€/kWh · DEDICATED INFRASTRUCTURE</div>
+  <div class="chart-wrap" style="height:260px">
+    <canvas id="chart4"></canvas>
+  </div>
+</div>
+```
+
+  </div>
+
+  <div class="charts-grid row-3" style="margin-bottom:20px">
+    <!-- Chart 2: Energy Mix -->
+    <div class="chart-card">
+      <div class="card-title" data-lang="en">2 · Generation Mix — Nuclear Dominant</div>
+      <div class="card-title" data-lang="de">2 · Erzeugungsmix — Nuklear-Dominant</div>
+      <div class="card-sub">% SHARE · SCENARIO 1</div>
+      <div class="scenario-pills">
+        <button class="pill active" onclick="switchMix(0,this)"><span data-lang-inline="en">Nuclear</span><span data-lang-inline="de">Nuklear</span></button>
+        <button class="pill" onclick="switchMix(1,this)"><span data-lang-inline="en">Hybrid</span><span data-lang-inline="de">Hybrid</span></button>
+        <button class="pill" onclick="switchMix(2,this)"><span data-lang-inline="en">Renewable</span><span data-lang-inline="de">Erneuerbar</span></button>
+      </div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chart2"></canvas>
+      </div>
+    </div>
+
+```
+<!-- Chart 3: Tech Cost -->
+<div class="chart-card">
+  <div class="card-title" data-lang="en">3 · Technology Cost Comparison</div>
+  <div class="card-title" data-lang="de">3 · Technologiekostenvergleich</div>
+  <div class="card-sub">€/kWh · LCOE RANGE</div>
+  <div class="chart-wrap" style="height:260px">
+    <canvas id="chart3"></canvas>
+  </div>
+</div>
+
+<!-- Chart 5: Citizen Price -->
+<div class="chart-card">
+  <div class="card-title" data-lang="en">5 · Citizen Energy Price by Scenario</div>
+  <div class="card-title" data-lang="de">5 · Bürgerenergiepreis nach Szenario</div>
+  <div class="card-sub">€/kWh · HOUSEHOLD TARIFF</div>
+  <div class="chart-wrap" style="height:260px">
+    <canvas id="chart5"></canvas>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- SECTION 2 -->
+
+  <div class="section-title" data-lang="en">02 · Investment & Capacity</div>
+  <div class="section-title" data-lang="de">02 · Investitionen & Kapazität</div>
+
+  <div class="charts-grid row-2" style="margin-bottom:20px">
+    <!-- Chart 6: Investment -->
+    <div class="chart-card">
+      <div class="card-title" data-lang="en">6 · Investment by Technology</div>
+      <div class="card-title" data-lang="de">6 · Investitionen nach Technologie</div>
+      <div class="card-sub">BILLION € · CAPEX</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chart6"></canvas>
+      </div>
+    </div>
+
+```
+<!-- Chart 7: Storage Capacity -->
+<div class="chart-card">
+  <div class="card-title" data-lang="en">7 · Storage Capacity by Technology</div>
+  <div class="card-title" data-lang="de">7 · Speicherkapazität nach Technologie</div>
+  <div class="card-sub">GWh · MAX SCENARIO</div>
+  <div class="chart-wrap" style="height:260px">
+    <canvas id="chart7"></canvas>
+  </div>
+</div>
+```
+
+  </div>
+
+  <div class="charts-grid row-3" style="margin-bottom:20px">
+    <!-- Chart 18: Generation Capacity -->
+    <div class="chart-card">
+      <div class="card-title" data-lang="en">18 · Generation Capacity Portfolio</div>
+      <div class="card-title" data-lang="de">18 · Erzeugungskapazitäts-Portfolio</div>
+      <div class="card-sub">GW · INSTALLED</div>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="chart18"></canvas>
+      </div>
+    </div>
+
+```
+<!-- Chart 16: Grid Losses -->
+<div class="chart-card">
+  <div class="card-title" data-lang="en">16 · Grid Loss Comparison</div>
+  <div class="card-title" data-lang="de">16 · Netzverlustverglicher</div>
+  <div class="card-sub">% TRANSMISSION LOSS</div>
+  <div class="chart-wrap" style="height:240px">
+    <canvas id="chart16"></canvas>
+  </div>
+</div>
+
+<!-- Chart 17: Storage Usage -->
+<div class="chart-card">
+  <div class="card-title" data-lang="en">17 · Storage Efficiency by Technology</div>
+  <div class="card-title" data-lang="de">17 · Speichereffizienz nach Technologie</div>
+  <div class="card-sub">% ROUND-TRIP EFFICIENCY</div>
+  <div class="chart-wrap" style="height:240px">
+    <canvas id="chart17"></canvas>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- SECTION 3 -->
+
+  <div class="section-title" data-lang="en">03 · Demand & Global Comparison</div>
+  <div class="section-title" data-lang="de">03 · Nachfrage & Globalvergleich</div>
+
+  <div class="charts-grid row-32" style="margin-bottom:20px">
+    <!-- Chart 10: AGI Demand Phases -->
+    <div class="chart-card">
+      <div class="card-title" data-lang="en">10 · AGI Cluster Demand — Growth Phases</div>
+      <div class="card-title" data-lang="de">10 · AGI-Cluster Nachfrage — Wachstumsphasen</div>
+      <div class="card-sub">MW · PHASE 1 → 2 → MAX</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chart10"></canvas>
+      </div>
+    </div>
+
+```
+<!-- Chart 11: Global Price Comparison -->
+<div class="chart-card">
+  <div class="card-title" data-lang="en">11 · Global Energy Price Comparison</div>
+  <div class="card-title" data-lang="de">11 · Globaler Energiepreisvergleich</div>
+  <div class="card-sub">€/kWh · COUNTRIES + KARLSRUHE TARGET</div>
+  <div class="chart-wrap" style="height:260px">
+    <canvas id="chart11"></canvas>
+  </div>
+</div>
+```
+
+  </div>
+
+  <div class="charts-grid row-23" style="margin-bottom:20px">
+    <!-- Chart 9: BW Energy Mix -->
+    <div class="chart-card">
+      <div class="card-title" data-lang="en">9 · Baden-Württemberg Energy Demand</div>
+      <div class="card-title" data-lang="de">9 · Baden-Württemberg Energiebedarf</div>
+      <div class="card-sub">TWh/YEAR · SECTOR BREAKDOWN</div>
+      <div class="chart-wrap" style="height:280px">
+        <canvas id="chart9"></canvas>
+      </div>
+    </div>
+
+```
+<!-- Chart 20: Global Price Ranking -->
+<div class="chart-card">
+  <div class="card-title" data-lang="en">20 · Global Energy Price Ranking</div>
+  <div class="card-title" data-lang="de">20 · Globales Energiepreis-Ranking</div>
+  <div class="card-sub">€/kWh · COMPARATIVE BENCHMARK</div>
+  <div style="overflow-x:auto">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th data-lang="en">Country / System</th>
+          <th data-lang="de">Land / System</th>
+          <th>€/kWh</th>
+          <th data-lang="en">Relative to Karlsruhe</th>
+          <th data-lang="de">Relativ zu Karlsruhe</th>
+        </tr>
+      </thead>
+      <tbody id="rankTable"></tbody>
+    </table>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- SECTION 4 -->
+
+  <div class="section-title" data-lang="en">04 · Advanced Analysis</div>
+  <div class="section-title" data-lang="de">04 · Erweiterte Analyse</div>
+
+  <div class="charts-grid row-2" style="margin-bottom:20px">
+    <!-- Chart 14: Waterfall -->
+    <div class="chart-card">
+      <div class="card-title" data-lang="en">14 · Energy Cost Waterfall — Nuclear Scenario</div>
+      <div class="card-title" data-lang="de">14 · Energiekosten-Wasserfall — Nuklear-Szenario</div>
+      <div class="card-sub">€/kWh · COST COMPONENT BUILD-UP</div>
+      <div class="chart-wrap" style="height:300px">
+        <canvas id="chart14"></canvas>
+      </div>
+    </div>
+
+```
+<!-- Chart 19: ROI -->
+<div class="chart-card">
+  <div class="card-title" data-lang="en">19 · System ROI — Investment Scenarios</div>
+  <div class="card-title" data-lang="de">19 · System-ROI — Investitionsszenarien</div>
+  <div class="card-sub">BILLION € · 20-YEAR HORIZON</div>
+  <div class="chart-wrap" style="height:300px">
+    <canvas id="chart19"></canvas>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- Chart 13: Heatmap -->
+
+  <div class="charts-grid row-1" style="margin-bottom:20px">
+    <div class="chart-card">
+      <div class="card-title" data-lang="en">13 · Cost Heatmap — Technology × Scenario</div>
+      <div class="card-title" data-lang="de">13 · Kosten-Heatmap — Technologie × Szenario</div>
+      <div class="card-sub">€/kWh · DARKER = CHEAPER</div>
+      <div id="heatmap-container" style="overflow-x:auto; padding-top:8px"></div>
+    </div>
+  </div>
+
+  <!-- Chart 15: Sankey -->
+
+  <div class="charts-grid row-1" style="margin-bottom:20px">
+    <div class="chart-card">
+      <div class="card-title" data-lang="en">15 · Energy Flow Sankey — Hybrid Scenario</div>
+      <div class="card-title" data-lang="de">15 · Energiefluss-Sankey — Hybrid-Szenario</div>
+      <div class="card-sub">TWh/YEAR · SOURCE → STORAGE → END-USE</div>
+      <svg id="sankey-svg" style="height:320px"></svg>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+
+  <div class="section-title" data-lang="en">05 · Reliability & Timeline</div>
+  <div class="section-title" data-lang="de">05 · Zuverlässigkeit & Timeline</div>
+
+  <div class="charts-grid row-2" style="margin-bottom:20px">
+    <!-- Chart 8: Reliability -->
+    <div class="chart-card">
+      <div class="card-title" data-lang="en">8 · System Reliability Levels</div>
+      <div class="card-title" data-lang="de">8 · Systemzuverlässigkeitsstufen</div>
+      <div class="card-sub">% UPTIME · RADAR ANALYSIS</div>
+      <div class="chart-wrap" style="height:300px">
+        <canvas id="chart8"></canvas>
+      </div>
+    </div>
+
+```
+<!-- Chart 12: Timeline -->
+<div class="chart-card">
+  <div class="card-title" data-lang="en">12 · Implementation Timeline</div>
+  <div class="card-title" data-lang="de">12 · Implementierungs-Timeline</div>
+  <div class="card-sub">2025 → 2045 · KEY MILESTONES</div>
+  <div class="timeline" style="padding-top:8px">
+    <div class="tl-line"></div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-year">2025–2026</div>
+        <div class="tl-title" data-lang="en">Planning & Permits</div>
+        <div class="tl-title" data-lang="de">Planung & Genehmigungen</div>
+        <div class="tl-text" data-lang="en">Site selection, environmental impact, political alignment, investor roadshow. SMR site chosen.</div>
+        <div class="tl-text" data-lang="de">Standortwahl, Umweltgutachten, politische Abstimmung, Investor-Roadshow. SMR-Standort gewählt.</div>
+        <div class="tl-badge">€0.5B secured</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-year">2027–2029</div>
+        <div class="tl-title" data-lang="en">Solar + Wind Buildout</div>
+        <div class="tl-title" data-lang="de">Solar + Wind Ausbau</div>
+        <div class="tl-text" data-lang="en">800 MW solar farm commissioning. 1.2 GW wind parks. Battery storage phase 1: 500 MWh.</div>
+        <div class="tl-text" data-lang="de">Inbetriebnahme 800 MW Solarpark. 1,2 GW Windparks. Batteriespeicher Phase 1: 500 MWh.</div>
+        <div class="tl-badge">€2.0B deployed</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-year">2030–2033</div>
+        <div class="tl-title" data-lang="en">SMR Online + AGI Phase 1</div>
+        <div class="tl-title" data-lang="de">SMR Online + AGI Phase 1</div>
+        <div class="tl-text" data-lang="en">First SMR 2 GW capacity. AGI cluster Phase 1: 120 MW. Grid private network 1% losses.</div>
+        <div class="tl-text" data-lang="de">Erster SMR 2 GW Kapazität. AGI-Cluster Phase 1: 120 MW. Privates Grid 1% Verluste.</div>
+        <div class="tl-badge">Target: 0.019 €/kWh</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-year">2035–2040</div>
+        <div class="tl-title" data-lang="en">Full Nuclear + AGI Scale</div>
+        <div class="tl-title" data-lang="de">Vollständig Nuklear + AGI Skalierung</div>
+        <div class="tl-text" data-lang="en">Second reactor 1.6 GW. AGI cluster 300 MW Phase 2. Hydrogen storage 15 GWh.</div>
+        <div class="tl-text" data-lang="de">Zweiter Reaktor 1,6 GW. AGI-Cluster 300 MW Phase 2. Wasserstoffspeicher 15 GWh.</div>
+        <div class="tl-badge">Target: 0.015 €/kWh</div>
+      </div>
+    </div>
+    <div class="tl-item" style="padding-bottom:0">
+      <div class="tl-dot" style="background:var(--lime)"></div>
+      <div class="tl-content">
+        <div class="tl-year">2045</div>
+        <div class="tl-title" data-lang="en">Full System — AGI 750 MW</div>
+        <div class="tl-title" data-lang="de">Vollsystem — AGI 750 MW</div>
+        <div class="tl-text" data-lang="en">Complete 6.5 TWh/year AGI demand met. Citizen price 0.015 €/kWh. AGI price 0.003 €/kWh.</div>
+        <div class="tl-text" data-lang="de">Vollständiger 6,5 TWh/Jahr AGI-Bedarf gedeckt. Bürgerpreis 0,015 €/kWh. AGI-Preis 0,003 €/kWh.</div>
+        <div class="tl-badge" style="background:rgba(140,255,102,0.15);color:var(--lime)">MISSION COMPLETE</div>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+
+<div class="footer">
+  <span>BLACKSPACE</span> · Karlsruhe Ultra-Cheap Energy System · Strategic Intelligence Dashboard · 2025
+</div>
+
+<script>
+// ─── LANGUAGE TOGGLE ───────────────────────────────────────────────────────
+function setLang(lang) {
+  document.getElementById('body').className = lang;
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('btn-de').classList.toggle('active', lang === 'de');
+}
+
+// ─── COLOR PALETTE ──────────────────────────────────────────────────────────
+const C = {
+  teal: '#a8edea',
+  tealD: '#5ecfc9',
+  blue: '#5b9cff',
+  orange: '#ffb347',
+  lime: '#8cff66',
+  pink: '#ff6b9d',
+  purple: '#c084fc',
+  yellow: '#fde047',
+};
+
+const defaultOpts = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      labels: { font: { family: 'Syne', size: 11 }, color: '#64748b', padding: 12 }
+    },
+    tooltip: {
+      backgroundColor: '#0d1117',
+      titleColor: '#a8edea',
+      bodyColor: '#fff',
+      borderColor: '#5ecfc9',
+      borderWidth: 1,
+      padding: 10,
+      titleFont: { family: 'Space Mono', size: 11 },
+      bodyFont: { family: 'Syne', size: 12 },
+    }
+  },
+  scales: {
+    x: {
+      grid: { color: 'rgba(168,237,234,0.1)' },
+      ticks: { font: { family: 'Space Mono', size: 9 }, color: '#94a3b8' }
+    },
+    y: {
+      grid: { color: 'rgba(168,237,234,0.1)' },
+      ticks: { font: { family: 'Space Mono', size: 9 }, color: '#94a3b8' }
+    }
+  }
+};
+
+function makeOpts(overrides = {}) {
+  return Object.assign({}, defaultOpts, overrides);
+}
+
+// ─── CHART 1: Energy Price by Scenario ─────────────────────────────────────
+new Chart(document.getElementById('chart1'), {
+  type: 'bar',
+  data: {
+    labels: ['Nuclear Dominant', 'Hybrid', 'Renewable'],
+    datasets: [
+      {
+        label: 'System Price €/kWh',
+        data: [0.019, 0.021, 0.028],
+        backgroundColor: [C.tealD, C.blue, C.orange],
+        borderRadius: 6,
+        borderSkipped: false,
+      },
+      {
+        label: 'AGI Price €/kWh',
+        data: [0.004, 0.006, 0.010],
+        backgroundColor: [
+          'rgba(168,237,234,0.3)',
+          'rgba(91,156,255,0.3)',
+          'rgba(255,179,71,0.3)'
+        ],
+        borderRadius: 6,
+        borderSkipped: false,
+      }
+    ]
+  },
+  options: makeOpts({ plugins: { ...defaultOpts.plugins, legend: { ...defaultOpts.plugins.legend, labels: { ...defaultOpts.plugins.legend.labels } } } })
+});
+
+// ─── CHART 2: Mix Doughnut ──────────────────────────────────────────────────
+const mixData = [
+  { labels: ['Nuclear','Wind','Solar','Waste Heat'], data: [70,10,10,10], colors: [C.blue,C.lime,C.orange,C.teal] },
+  { labels: ['Nuclear','Wind','Solar','Waste Heat'], data: [50,20,20,10], colors: [C.blue,C.lime,C.orange,C.teal] },
+  { labels: ['Wind','Solar','Nuclear','Waste Heat'], data: [40,35,15,10], colors: [C.lime,C.orange,C.blue,C.teal] },
+];
+let mixIdx = 0;
+const mixChart = new Chart(document.getElementById('chart2'), {
+  type: 'doughnut',
+  data: {
+    labels: mixData[0].labels,
+    datasets: [{
+      data: mixData[0].data,
+      backgroundColor: mixData[0].colors,
+      borderWidth: 0,
+      hoverOffset: 8,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '65%',
+    plugins: {
+      legend: { position: 'right', labels: { font: { family: 'Syne', size: 10 }, color: '#64748b', padding: 8, boxWidth: 12 } },
+      tooltip: defaultOpts.plugins.tooltip
+    }
+  }
+});
+
+function switchMix(idx, el) {
+  mixIdx = idx;
+  mixChart.data.labels = mixData[idx].labels;
+  mixChart.data.datasets[0].data = mixData[idx].data;
+  mixChart.data.datasets[0].backgroundColor = mixData[idx].colors;
+  mixChart.update();
+  document.querySelectorAll('.scenario-pills .pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ─── CHART 3: Tech Cost Horizontal Bar ──────────────────────────────────────
+new Chart(document.getElementById('chart3'), {
+  type: 'bar',
+  data: {
+    labels: ['Nuclear (SMR)','Nuclear (Large)','Hydro','Wind','Solar','Waste Heat','Hydrogen Stor.','Battery Stor.'],
+    datasets: [{
+      label: 'Min €/kWh',
+      data: [0.018, 0.018, 0.020, 0.030, 0.035, 0.005, 0.060, 0.050],
+      backgroundColor: C.tealD,
+      borderRadius: 4,
+    },{
+      label: 'Max €/kWh',
+      data: [0.025, 0.022, 0.030, 0.040, 0.050, 0.008, 0.060, 0.050],
+      backgroundColor: 'rgba(94,207,201,0.3)',
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    ...makeOpts({ indexAxis: 'y' }),
+    scales: {
+      x: { grid: { color: 'rgba(168,237,234,0.1)' }, ticks: { font: { family: 'Space Mono', size: 8 }, color: '#94a3b8' } },
+      y: { grid: { color: 'rgba(168,237,234,0.1)' }, ticks: { font: { family: 'Space Mono', size: 8 }, color: '#94a3b8' } }
+    }
+  }
+});
+
+// ─── CHART 4: AGI Price Gauge-style Bar ─────────────────────────────────────
+new Chart(document.getElementById('chart4'), {
+  type: 'bar',
+  data: {
+    labels: ['Nuclear\nScenario','Hybrid\nScenario','Renewable\nScenario','Target\n(Optimal)','Upper\nLimit'],
+    datasets: [{
+      label: 'AGI Energy Price (€/kWh)',
+      data: [0.004, 0.006, 0.010, 0.0025, 0.004],
+      backgroundColor: [C.lime, C.tealD, C.orange, C.blue, C.pink],
+      borderRadius: 8,
+      borderSkipped: false,
+    }]
+  },
+  options: makeOpts({
+    plugins: { ...defaultOpts.plugins, legend: { display: false } }
+  })
+});
+
+// ─── CHART 5: Citizen Price Line ────────────────────────────────────────────
+new Chart(document.getElementById('chart5'), {
+  type: 'line',
+  data: {
+    labels: ['Nuclear', 'Hybrid', 'Renewable', 'Germany Avg'],
+    datasets: [{
+      label: 'Citizen Price (€/kWh)',
+      data: [0.015, 0.018, 0.024, 0.045],
+      borderColor: C.tealD,
+      backgroundColor: 'rgba(168,237,234,0.1)',
+      fill: true,
+      tension: 0.4,
+      pointRadius: 6,
+      pointBackgroundColor: C.tealD,
+      pointBorderColor: '#fff',
+      pointBorderWidth: 2,
+    },{
+      label: 'Target 0.015',
+      data: [0.015, 0.015, 0.015, 0.015],
+      borderColor: C.lime,
+      borderDash: [6,3],
+      pointRadius: 0,
+      fill: false,
+    }]
+  },
+  options: makeOpts()
+});
+
+// ─── CHART 6: Investment Bar ─────────────────────────────────────────────────
+new Chart(document.getElementById('chart6'), {
+  type: 'bar',
+  data: {
+    labels: ['Nuclear\nLarge','SMR','Solar\nFarms','Wind\nParks','Storage','Grid\nUpgrade'],
+    datasets: [
+      { label: 'Min (B€)', data: [6,2,0.8,1.2,1,0.5], backgroundColor: C.blue, borderRadius: 6, borderSkipped: false },
+      { label: 'Max (B€)', data: [8,3,0.8,1.2,1,0.5], backgroundColor: 'rgba(91,156,255,0.3)', borderRadius: 6, borderSkipped: false },
+    ]
+  },
+  options: makeOpts()
+});
+
+// ─── CHART 7: Storage Capacity ───────────────────────────────────────────────
+new Chart(document.getElementById('chart7'), {
+  type: 'polarArea',
+  data: {
+    labels: ['Battery (Max)','Hydro-Pumped (Max)','Hydrogen (Max)'],
+    datasets: [{
+      data: [2, 8, 30],
+      backgroundColor: [C.orange+'99', C.tealD+'99', C.blue+'99'],
+      borderWidth: 0,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { font: { family: 'Syne', size: 10 }, color: '#64748b', padding: 10 } },
+      tooltip: defaultOpts.plugins.tooltip
+    },
+    scales: {
+      r: { ticks: { font: { family: 'Space Mono', size: 8 }, color: '#94a3b8' }, grid: { color: 'rgba(168,237,234,0.1)' } }
+    }
+  }
+});
+
+// ─── CHART 8: Reliability Radar ──────────────────────────────────────────────
+new Chart(document.getElementById('chart8'), {
+  type: 'radar',
+  data: {
+    labels: ['Uptime %','Grid Redundancy','Storage Backup (h)','Backup Gen (GW)','Fault Recovery','Cyber Resilience'],
+    datasets: [
+      {
+        label: 'AGI Cluster',
+        data: [99.999, 100, 100, 100, 90, 85],
+        borderColor: C.lime,
+        backgroundColor: 'rgba(140,255,102,0.1)',
+        pointBackgroundColor: C.lime,
+        pointRadius: 5,
+      },{
+        label: 'City Grid',
+        data: [99.9, 80, 70, 65, 75, 70],
+        borderColor: C.tealD,
+        backgroundColor: 'rgba(168,237,234,0.1)',
+        pointBackgroundColor: C.tealD,
+        pointRadius: 5,
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { font: { family: 'Syne', size: 11 }, color: '#64748b' } },
+      tooltip: defaultOpts.plugins.tooltip
+    },
+    scales: {
+      r: {
+        min: 0, max: 100,
+        ticks: { font: { family: 'Space Mono', size: 8 }, color: '#94a3b8', stepSize: 20 },
+        grid: { color: 'rgba(168,237,234,0.12)' },
+        pointLabels: { font: { family: 'Syne', size: 9 }, color: '#64748b' }
+      }
+    }
+  }
+});
+
+// ─── CHART 9: BW Demand ──────────────────────────────────────────────────────
+new Chart(document.getElementById('chart9'), {
+  type: 'bar',
+  data: {
+    labels: ['Industry','Residential','Tech Parks','AGI Cluster\n(Phase Max)','Other'],
+    datasets: [{
+      label: 'TWh/Year',
+      data: [42, 23, 0.8, 6.5, 10],
+      backgroundColor: [C.blue, C.tealD, C.lime, C.orange, C.purple],
+      borderRadius: 8,
+      borderSkipped: false,
+    }]
+  },
+  options: makeOpts({ plugins: { ...defaultOpts.plugins, legend: { display: false } } })
+});
+
+// ─── CHART 10: AGI Demand Phases ────────────────────────────────────────────
+new Chart(document.getElementById('chart10'), {
+  type: 'line',
+  data: {
+    labels: ['2025','2027','2029','2031','2033','2035','2037','2039','2041','2043','2045'],
+    datasets: [{
+      label: 'AGI Cluster Demand (MW)',
+      data: [0, 20, 60, 120, 180, 300, 400, 500, 600, 700, 750],
+      borderColor: C.orange,
+      backgroundColor: 'rgba(255,179,71,0.08)',
+      fill: true,
+      tension: 0.5,
+      pointRadius: 5,
+      pointBackgroundColor: C.orange,
+      pointBorderColor: '#fff',
+      pointBorderWidth: 2,
+    },{
+      label: 'Phase 1 Limit (120 MW)',
+      data: Array(11).fill(120),
+      borderColor: C.tealD+'80',
+      borderDash: [4,4],
+      pointRadius: 0,
+    },{
+      label: 'Phase 2 Limit (300 MW)',
+      data: Array(11).fill(300),
+      borderColor: C.blue+'80',
+      borderDash: [4,4],
+      pointRadius: 0,
+    }]
+  },
+  options: makeOpts()
+});
+
+// ─── CHART 11: Global Comparison ─────────────────────────────────────────────
+const globalData = {
+  labels: ['Saudi Arabia','China','Karlsruhe Target','USA','France','Germany (Avg)'],
+  data: [0.010, 0.012, 0.015, 0.018, 0.028, 0.045],
+  colors: [C.orange, C.blue, C.lime, C.tealD, C.purple, '#ef4444'],
+};
+new Chart(document.getElementById('chart11'), {
+  type: 'bar',
+  data: {
+    labels: globalData.labels,
+    datasets: [{
+      label: '€/kWh',
+      data: globalData.data,
+      backgroundColor: globalData.colors,
+      borderRadius: 6,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    ...makeOpts({ plugins: { ...defaultOpts.plugins, legend: { display: false } } }),
+    indexAxis: 'y',
+    scales: {
+      x: { grid: { color: 'rgba(168,237,234,0.1)' }, ticks: { font: { family: 'Space Mono', size: 9 }, color: '#94a3b8' } },
+      y: { grid: { color: 'rgba(168,237,234,0.1)' }, ticks: { font: { family: 'Space Mono', size: 9 }, color: '#94a3b8' } }
+    }
+  }
+});
+
+// ─── CHART 13: Heatmap ──────────────────────────────────────────────────────
+(function buildHeatmap() {
+  const rows = ['Nuclear','Wind','Solar','Waste Heat','Hydro'];
+  const cols = ['Nuclear Dom.','Hybrid','Renewable'];
+  const vals = [
+    [0.018, 0.020, 0.025],
+    [0.030, 0.032, 0.035],
+    [0.035, 0.038, 0.040],
+    [0.005, 0.006, 0.008],
+    [0.020, 0.022, 0.030],
+  ];
+  const min = 0.005, max = 0.045;
+  const cont = document.getElementById('heatmap-container');
+  const w = Math.max(cont.clientWidth, 600);
+  const cellW = Math.floor((w - 120) / cols.length);
+  const cellH = 52;
+  
+  let html = '<div style="display:flex;gap:4px;margin-bottom:4px;padding-left:120px">';
+  cols.forEach(c => { html += `<div style="width:${cellW}px;text-align:center;font-family:'Space Mono',monospace;font-size:9px;color:#94a3b8;letter-spacing:0.1em">${c}</div>`; });
+  html += '</div>';
+
+  rows.forEach((r, ri) => {
+    html += `<div style="display:flex;gap:4px;margin-bottom:4px;align-items:center">`;
+    html += `<div style="width:116px;font-size:10px;font-weight:700;color:#64748b;font-family:'Syne',sans-serif">${r}</div>`;
+    vals[ri].forEach((v, ci) => {
+      const pct = (max - v) / (max - min);
+      const r2 = Math.round(94 * (1-pct) + 14 * pct);
+      const g2 = Math.round(163 * pct + 32 * (1-pct));
+      const b2 = Math.round(211 * (1-pct) + 175 * pct);
+      const bg = `rgb(${r2},${g2},${b2})`;
+      const textColor = pct > 0.5 ? '#0d1117' : '#fff';
+      html += `<div class="hm-cell" style="width:${cellW}px;height:${cellH}px;background:${bg};color:${textColor};border-radius:8px;flex-direction:column;gap:2px">
+        <span style="font-size:12px;font-weight:800">${v.toFixed(3)}</span>
+        <span style="font-size:8px;opacity:0.7">€/kWh</span>
+      </div>`;
+    });
+    html += '</div>';
+  });
+
+  cont.innerHTML = html;
+})();
+
+// ─── CHART 14: Waterfall ────────────────────────────────────────────────────
+(function buildWaterfall() {
+  const steps = [
+    { label: 'Generation\nCost', v: 0.018, type: 'add' },
+    { label: 'Transmission\nLoss 4%', v: 0.001, type: 'add' },
+    { label: 'Storage\nCost', v: 0.003, type: 'add' },
+    { label: 'Grid\nUpgrade', v: 0.002, type: 'add' },
+    { label: 'Waste Heat\nOffset', v: -0.004, type: 'sub' },
+    { label: 'Scale\nDiscount', v: -0.002, type: 'sub' },
+    { label: 'Final\nPrice', v: null, type: 'total' },
+  ];
+  let runningTotal = 0;
+  const starts = [], ends = [];
+  steps.forEach((s, i) => {
+    if (s.type === 'total') {
+      starts.push(0);
+      ends.push(runningTotal);
+      s.v = runningTotal;
+    } else {
+      starts.push(s.v < 0 ? runningTotal + s.v : runningTotal);
+      runningTotal += s.v;
+      ends.push(runningTotal);
+    }
+  });
+
+  const floatBars = steps.map((s,i) => s.type === 'total' ? 0 : starts[i]);
+  const bars = steps.map((s,i) => s.type === 'total' ? s.v : Math.abs(s.v));
+  const colors = steps.map(s => s.type === 'add' ? C.blue+'cc' : s.type === 'sub' ? C.lime+'cc' : C.tealD);
+
+  new Chart(document.getElementById('chart14'), {
+    type: 'bar',
+    data: {
+      labels: steps.map(s => s.label),
+      datasets: [
+        { data: floatBars, backgroundColor: 'transparent', borderWidth: 0 },
+        { label: '€/kWh', data: bars, backgroundColor: colors, borderRadius: 4, borderSkipped: false },
+      ]
+    },
+    options: {
+      ...makeOpts({ plugins: { ...defaultOpts.plugins, legend: { display: false } } }),
+      scales: {
+        x: { stacked: true, grid: { color: 'rgba(168,237,234,0.1)' }, ticks: { font: { family: 'Space Mono', size: 8 }, color: '#94a3b8' } },
+        y: { stacked: true, grid: { color: 'rgba(168,237,234,0.1)' }, ticks: { font: { family: 'Space Mono', size: 9 }, color: '#94a3b8' }, max: 0.03 }
+      }
+    }
+  });
+})();
+
+// ─── CHART 15: Sankey (D3) ──────────────────────────────────────────────────
+(function buildSankey() {
+  const svg = d3.select('#sankey-svg');
+  const W = document.getElementById('sankey-svg').parentElement.clientWidth - 48;
+  const H = 300;
+  svg.attr('viewBox', `0 0 ${W} ${H}`);
+
+  const nodes = [
+    {id:'Nuclear',x:0,y:0.1,h:0.5,color:C.blue,label:'Nuclear\n50%'},
+    {id:'Wind',x:0,y:0.62,h:0.18,color:C.lime,label:'Wind\n20%'},
+    {id:'Solar',x:0,y:0.82,h:0.18,color:C.orange,label:'Solar\n20%'},
+    {id:'Waste',x:0.32,y:0.87,h:0.09,color:C.teal,label:'Waste\nHeat 10%'},
+    {id:'Storage',x:0.48,y:0.35,h:0.3,color:C.purple,label:'Storage'},
+    {id:'AGI',x:0.75,y:0.05,h:0.35,color:C.orange,label:'AGI\nCluster\n6.5 TWh'},
+    {id:'Industry',x:0.75,y:0.43,h:0.25,color:C.tealD,label:'Industry\n1.4 TWh'},
+    {id:'City',x:0.75,y:0.71,h:0.22,color:C.blue,label:'City\n0.56 TWh'},
+  ];
+
+  const nodeW = 18;
+  nodes.forEach(n => {
+    n.px = n.x * W;
+    n.py = n.y * H;
+    n.ph = n.h * H;
+  });
+
+  // flows: [from, to, thickness]
+  const flows = [
+    ['Nuclear','AGI',3.25],['Nuclear','Storage',1.2],['Nuclear','Industry',0.9],['Nuclear','City',0.5],
+    ['Wind','Storage',0.6],['Wind','Industry',0.6],
+    ['Solar','Storage',0.4],['Solar','City',0.3],
+    ['Waste','AGI',0.5],['Waste','City',0.2],
+    ['Storage','AGI',1.0],['Storage','Industry',0.5],['Storage','City',0.3],
+  ];
+
+  const nodeMap = {};
+  nodes.forEach(n => nodeMap[n.id] = n);
+
+  const flowMaxT = 3.5;
+
+  flows.forEach(f => {
+    const src = nodeMap[f[0]], dst = nodeMap[f[1]];
+    const thick = Math.max(2, (f[2] / flowMaxT) * 18);
+    const x1 = src.px + nodeW, x2 = dst.px;
+    const sy = src.py + src.ph * 0.5;
+    const dy = dst.py + dst.ph * 0.5;
+    const cx = (x1 + x2) / 2;
+    svg.append('path')
+      .attr('d', `M${x1},${sy} C${cx},${sy} ${cx},${dy} ${x2},${dy}`)
+      .attr('stroke', src.color)
+      .attr('stroke-width', thick)
+      .attr('fill', 'none')
+      .attr('opacity', 0.35);
+  });
+
+  nodes.forEach(n => {
+    svg.append('rect')
+      .attr('x', n.px).attr('y', n.py)
+      .attr('width', nodeW).attr('height', n.ph)
+      .attr('rx', 4).attr('fill', n.color).attr('opacity', 0.9);
+    
+    const lines = n.label.split('\n');
+    const isLeft = n.x < 0.5;
+    const tx = isLeft ? n.px + nodeW + 6 : n.px - 6;
+    const ty = n.py + n.ph / 2;
+    const anchor = isLeft ? 'start' : 'end';
+    const fg = svg.append('text')
+      .attr('x', tx).attr('y', ty - (lines.length - 1) * 6)
+      .attr('text-anchor', anchor)
+      .attr('dominant-baseline', 'middle')
+      .attr('fill', '#1a202c')
+      .style('font-family', 'Space Mono, monospace')
+      .style('font-size', '9px').style('font-weight', '700');
+    lines.forEach((l, i) => {
+      fg.append('tspan').attr('x', tx).attr('dy', i === 0 ? 0 : 13).text(l);
+    });
+  });
+})();
+
+// ─── CHART 16: Grid Losses ──────────────────────────────────────────────────
+new Chart(document.getElementById('chart16'), {
+  type: 'bar',
+  data: {
+    labels: ['Current Grid','Optimized Grid','AGI Private Grid'],
+    datasets: [{
+      label: 'Transmission Loss (%)',
+      data: [6, 4, 1],
+      backgroundColor: [C.orange, C.blue, C.lime],
+      borderRadius: 8,
+      borderSkipped: false,
+    }]
+  },
+  options: makeOpts({ plugins: { ...defaultOpts.plugins, legend: { display: false } } })
+});
+
+// ─── CHART 17: Storage Efficiency ────────────────────────────────────────────
+new Chart(document.getElementById('chart17'), {
+  type: 'bar',
+  data: {
+    labels: ['Battery','Hydro-Pumped','Hydrogen'],
+    datasets: [{
+      label: 'Round-trip Efficiency (%)',
+      data: [90, 75, 40],
+      backgroundColor: [C.lime, C.tealD, C.blue],
+      borderRadius: 8,
+      borderSkipped: false,
+    },{
+      label: 'Efficiency Loss (%)',
+      data: [10, 25, 60],
+      backgroundColor: ['rgba(140,255,102,0.2)', 'rgba(94,207,201,0.2)', 'rgba(91,156,255,0.2)'],
+      borderRadius: 8,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    ...makeOpts(),
+    scales: {
+      x: { stacked: true, grid: { color: 'rgba(168,237,234,0.1)' }, ticks: { font: { family: 'Space Mono', size: 9 }, color: '#94a3b8' } },
+      y: { stacked: true, max: 100, grid: { color: 'rgba(168,237,234,0.1)' }, ticks: { font: { family: 'Space Mono', size: 9 }, color: '#94a3b8' } }
+    }
+  }
+});
+
+// ─── CHART 18: Generation Capacity ───────────────────────────────────────────
+new Chart(document.getElementById('chart18'), {
+  type: 'bar',
+  data: {
+    labels: ['Nuclear\n(Large)','SMR','Wind\nParks','Solar\nFarm','Hydro','Waste\nHeat','Backup\nGen'],
+    datasets: [
+      { label: 'Min GW', data: [1.4, 2, 1.2, 0.8, 0.2, 0.25, 2], backgroundColor: C.tealD, borderRadius: 4, borderSkipped: false },
+      { label: 'Max GW', data: [1.6, 3, 1.2, 0.8, 0.4, 0.25, 2], backgroundColor: 'rgba(94,207,201,0.3)', borderRadius: 4, borderSkipped: false },
+    ]
+  },
+  options: makeOpts()
+});
+
+// ─── CHART 19: ROI ───────────────────────────────────────────────────────────
+new Chart(document.getElementById('chart19'), {
+  type: 'line',
+  data: {
+    labels: ['Y0','Y2','Y4','Y6','Y8','Y10','Y12','Y15','Y18','Y20'],
+    datasets: [
+      {
+        label: 'Min Scenario (2B€)',
+        data: [-2,-1.8,-1.5,-0.8,0.2,1.5,3.0,5.5,8.5,11.0],
+        borderColor: C.lime, backgroundColor: 'rgba(140,255,102,0.08)', fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: C.lime,
+      },{
+        label: 'Optimal (4B€)',
+        data: [-4,-3.5,-2.5,-1.0,1.5,4.5,8.0,14.0,21.0,28.0],
+        borderColor: C.tealD, backgroundColor: 'rgba(168,237,234,0.08)', fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: C.tealD,
+      },{
+        label: 'Max (7B€)',
+        data: [-7,-6.5,-5,-2.5,1,6,12,22,34,46],
+        borderColor: C.blue, backgroundColor: 'rgba(91,156,255,0.06)', fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: C.blue,
+      }
+    ]
+  },
+  options: makeOpts()
+});
+
+// ─── TABLE: Global Ranking ────────────────────────────────────────────────────
+(function buildTable() {
+  const items = [
+    { name_en: 'Saudi Arabia', name_de: 'Saudi-Arabien', flag: '🇸🇦', price: 0.010 },
+    { name_en: 'China', name_de: 'China', flag: '🇨🇳', price: 0.012 },
+    { name_en: 'Karlsruhe Target', name_de: 'Karlsruhe Ziel', flag: '🎯', price: 0.015 },
+    { name_en: 'USA', name_de: 'USA', flag: '🇺🇸', price: 0.018 },
+    { name_en: 'France', name_de: 'Frankreich', flag: '🇫🇷', price: 0.028 },
+    { name_en: 'Germany (Avg)', name_de: 'Deutschland (Ø)', flag: '🇩🇪', price: 0.045 },
+  ];
+  const tbody = document.getElementById('rankTable');
+  const karP = 0.015;
+  items.forEach((it, i) => {
+    const ratio = (it.price / karP * 100).toFixed(0);
+    const pct = (it.price / 0.05 * 100).toFixed(0);
+    const isTarget = it.name_en === 'Karlsruhe Target';
+    const barColor = isTarget ? C.lime : it.price <= karP ? C.tealD : (it.price <= 0.025 ? C.orange : '#ef4444');
+    tbody.innerHTML += `
+      <tr style="${isTarget ? 'background:rgba(140,255,102,0.06)' : ''}">
+        <td style="font-weight:700" data-lang="en">${i+1}. ${it.flag} ${it.name_en}</td>
+        <td style="font-weight:700" data-lang="de">${i+1}. ${it.flag} ${it.name_de}</td>
+        <td>
+          <div class="price-bar-wrap">
+            <div class="price-bar" style="width:${pct}%;background:${barColor};min-width:4px"></div>
+            <span class="price-val">${it.price.toFixed(3)} €</span>
+          </div>
+        </td>
+        <td style="font-family:'Space Mono',monospace;font-size:11px;color:${isTarget?C.lime:it.price<=karP?C.tealD:'#ef4444'}">
+          <span data-lang="en">${isTarget ? '✓ TARGET' : ratio+'%'}</span>
+          <span data-lang="de">${isTarget ? '✓ ZIEL' : ratio+'%'}</span>
+        </td>
+      </tr>
+    `;
+  });
+})();
+
+</script>
+
+</body>
+</html>
