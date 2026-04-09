@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGI — Private Investment Offer</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #ffffff;
+    --orange: #E85C2B;
+    --light: #f0ede8;
+    --mid: #d0ccc5;
+    --dark-gray: #1a1a1a;
+    --section-pad: 48px 56px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    font-size: 15px;
+    line-height: 1.5;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--black);
+    padding: 28px 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 28px;
+    color: var(--white);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+
+  .logo span { color: var(--orange); }
+
+  .doc-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--orange);
+    text-transform: uppercase;
+    border: 1px solid var(--orange);
+    padding: 4px 12px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--black);
+    padding: 56px 56px 48px;
+    border-top: 1px solid #333;
+  }
+
+  .hero-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-tag::after {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 2px;
+    background: var(--orange);
+  }
+
+  .hero h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 56px;
+    line-height: 1.0;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+    max-width: 680px;
+  }
+
+  .hero h1 em {
+    color: var(--orange);
+    font-style: normal;
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    color: #aaa;
+    max-width: 580px;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  /* ── OFFER BOX ── */
+  .offer-strip {
+    background: var(--orange);
+    padding: 28px 56px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+  }
+
+  .offer-item {
+    text-align: center;
+    padding: 0 24px;
+    border-right: 1px solid rgba(255,255,255,0.3);
+  }
+
+  .offer-item:last-child { border-right: none; }
+
+  .offer-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 42px;
+    color: var(--white);
+    line-height: 1;
+    display: block;
+  }
+
+  .offer-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase;
+    margin-top: 4px;
+    display: block;
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: var(--section-pad);
+    border-bottom: 1px solid var(--mid);
+  }
+
+  .section-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-tag::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--orange);
+  }
+
+  h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 24px;
+    line-height: 1.1;
+  }
+
+  /* ── DEAL TERMS ── */
+  .deal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--mid);
+    border: 2px solid var(--black);
+  }
+
+  .deal-cell {
+    background: var(--white);
+    padding: 20px 24px;
+  }
+
+  .deal-cell.dark {
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .deal-cell.orange {
+    background: var(--orange);
+    color: var(--white);
+  }
+
+  .deal-cell-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 6px;
+  }
+
+  .deal-cell-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .deal-cell-note {
+    font-size: 12px;
+    margin-top: 6px;
+    opacity: 0.7;
+    font-weight: 300;
+  }
+
+  /* ── LEAN CANVAS ── */
+  .canvas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    background: var(--mid);
+  }
+
+  .canvas-cell {
+    background: var(--light);
+    padding: 20px;
+  }
+
+  .canvas-cell.highlight {
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .canvas-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 10px;
+  }
+
+  .canvas-cell.highlight .canvas-title {
+    color: var(--orange);
+  }
+
+  .canvas-cell p, .canvas-cell li {
+    font-size: 13px;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+
+  .canvas-cell ul {
+    padding-left: 14px;
+  }
+
+  .canvas-cell li { margin-bottom: 4px; }
+
+  /* ── TEAM ── */
+  .team-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .team-card {
+    border: 1px solid var(--mid);
+    padding: 20px 24px;
+    position: relative;
+  }
+
+  .team-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--orange);
+  }
+
+  .team-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+
+  .team-role {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 8px;
+  }
+
+  .team-bio {
+    font-size: 13px;
+    color: #444;
+    line-height: 1.5;
+    font-weight: 300;
+  }
+
+  /* ── MILESTONES ── */
+  .milestone-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--light);
+  }
+
+  .milestone-row:last-child { border-bottom: none; }
+
+  .milestone-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 36px;
+    color: var(--orange);
+    line-height: 1;
+    min-width: 44px;
+  }
+
+  .milestone-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 3px;
+  }
+
+  .milestone-desc {
+    font-size: 13px;
+    color: #555;
+    font-weight: 300;
+  }
+
+  /* ── VALUATION ── */
+  .val-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .val-table th {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .val-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--light);
+    vertical-align: top;
+  }
+
+  .val-table tr:nth-child(even) td { background: var(--light); }
+
+  .val-scenario {
+    font-weight: 600;
+  }
+
+  .val-amount {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    color: var(--orange);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--black);
+    padding: 32px 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
+  }
+
+  .footer-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 20px;
+    color: var(--white);
+    letter-spacing: 3px;
+  }
+
+  .footer-logo span { color: var(--orange); }
+
+  .footer-info {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.7;
+    text-align: right;
+  }
+
+  .footer-disclaimer {
+    font-size: 10px;
+    color: #444;
+    border-top: 1px solid #222;
+    padding: 16px 56px;
+    background: var(--black);
+    line-height: 1.6;
+  }
+
+  @media print {
+    body { max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo"><span>AGI</span></div>
+  <div class="doc-label">Confidential · Private Investment Offer</div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">AGI · Karlsruhe, Germany · April 2026</div>
+  <h1>Build the <em>First</em> AGI Architecture<br>in Europe & Russia.<br>Fund the <em>Future.</em></h1>
+  <p class="hero-sub">AGI is developing a sovereign AGI infrastructure with a new training architecture — 10x cheaper than DeepSeek. We are competing for €3,000,000 in non-dilutive public funding. We offer a private bridge instrument with a 4x return guarantee.</p>
+</div>
+
+<!-- OFFER STRIP -->
+<div class="offer-strip">
+  <div class="offer-item">
+    <span class="offer-num">€10K</span>
+    <span class="offer-label">You Invest Today</span>
+  </div>
+  <div class="offer-item">
+    <span class="offer-num">€40K</span>
+    <span class="offer-label">You Receive Back</span>
+  </div>
+  <div class="offer-item">
+    <span class="offer-num">4x</span>
+    <span class="offer-label">Return on Capital</span>
+  </div>
+</div>
+
+<!-- DEAL TERMS -->
+<section>
+  <div class="section-tag">The Offer</div>
+  <h2>Deal Terms</h2>
+  <div class="deal-grid">
+    <div class="deal-cell dark">
+      <div class="deal-cell-label">Instrument</div>
+      <div class="deal-cell-value">Private Bridge Loan</div>
+      <div class="deal-cell-note">Simple written contract. No equity dilution.</div>
+    </div>
+    <div class="deal-cell orange">
+      <div class="deal-cell-label">You Invest</div>
+      <div class="deal-cell-value">€10,000</div>
+      <div class="deal-cell-note">One-time, transferred today</div>
+    </div>
+    <div class="deal-cell">
+      <div class="deal-cell-label">You Receive</div>
+      <div class="deal-cell-value">€40,000</div>
+      <div class="deal-cell-note">Fixed repayment — 4x return</div>
+    </div>
+    <div class="deal-cell">
+      <div class="deal-cell-label">Trigger Event</div>
+      <div class="deal-cell-value">SPRIND Win</div>
+      <div class="deal-cell-note">Repayment from Stage 1 disbursement of €3M non-dilutive grant</div>
+    </div>
+    <div class="deal-cell dark">
+      <div class="deal-cell-label">Collateral</div>
+      <div class="deal-cell-value">Startup Valuation</div>
+      <div class="deal-cell-note">Conservative today: €3M–€8M. Loan is &lt;0.3% of company value.</div>
+    </div>
+    <div class="deal-cell">
+      <div class="deal-cell-label">Competition Deadline</div>
+      <div class="deal-cell-value">May 29, 2026</div>
+      <div class="deal-cell-note">SPRIND Next Frontier AI Challenge — up to €125M total prize</div>
+    </div>
+  </div>
+</section>
+
+<!-- LEAN CANVAS -->
+<section style="background: var(--light);">
+  <div class="section-tag">Business Model</div>
+  <h2>Lean Canvas — OpenAGI Core</h2>
+  <div class="canvas-grid">
+    <div class="canvas-cell highlight">
+      <div class="canvas-title">Problem</div>
+      <ul>
+        <li>Training AI models costs billions — inaccessible for Europe</li>
+        <li>No sovereign AGI infrastructure in Germany</li>
+        <li>Existing architectures (Transformers) are inefficient</li>
+        <li>EU data sovereignty at risk from US/China dependency</li>
+      </ul>
+    </div>
+    <div class="canvas-cell">
+      <div class="canvas-title">Solution</div>
+      <ul>
+        <li>New AGI architecture — 10x cheaper training vs DeepSeek</li>
+        <li>Two-layer brain model: Conscious + Unconscious</li>
+        <li>Anti-degradation Critical Module</li>
+        <li>DeepSleep consolidation (4-phase memory)</li>
+        <li>VAK multi-modal learning engine</li>
+      </ul>
+    </div>
+    <div class="canvas-cell">
+      <div class="canvas-title">Unique Value</div>
+      <p><strong>Only AGI startup in Germany</strong> with a proprietary low-cost architecture. Built at KIT. Access to 750x H800 GPU cluster. EU-sovereign by design.</p>
+    </div>
+    <div class="canvas-cell highlight">
+      <div class="canvas-title">Revenue Streams</div>
+      <ul>
+        <li>API access to AGI inference engine</li>
+        <li>Enterprise AI agent licensing (10-agent orchestration)</li>
+        <li>Sovereign GPU compute — AGI data center</li>
+        <li>Corporate AI transformation consulting</li>
+        <li>AI-first corporate development agent (CRO replacement)</li>
+      </ul>
+    </div>
+    <div class="canvas-cell">
+      <div class="canvas-title">Unfair Advantage</div>
+      <ul>
+        <li>KIT partnership + H800 GPU cluster</li>
+        <li>Proprietary architecture — not replicable</li>
+        <li>20 global advisors across Google, banking, AI</li>
+        <li>SPRIND / EU institutional backing path</li>
+        <li>German monopoly — first mover</li>
+      </ul>
+    </div>
+    <div class="canvas-cell">
+      <div class="canvas-title">Market</div>
+      <p>Global AI infrastructure market: <strong>$500B+ by 2030</strong>. German AI market: <strong>€30B+ by 2027</strong>. Target: Enterprises, Banks, Government, Defense — sectors requiring sovereignty.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section>
+  <div class="section-tag">Core Team</div>
+  <h2>The Builders</h2>
+  <div class="team-grid">
+    <div class="team-card">
+      <div class="team-name">Simon Zab</div>
+      <div class="team-role">Founder & CEO</div>
+      <div class="team-bio">HyperScale, CorpDev, GR. Deep understanding of architecture efficiency. Tech Visionary of AGI paradigm. Builder of future KIT based 1st AGI institute.</div>
+    </div>
+    <div class="team-card">
+      <div class="team-name">Eduard Gaal</div>
+      <div class="team-role">AI Architect & Engineer</div>
+      <div class="team-bio">Principal Engineer at Redwood Software. KIT graduate — Informatics (1997–2010). 20+ years senior engineering. Security certified (OWASP). Core architecture builder.</div>
+    </div>
+    <div class="team-card">
+      <div class="team-name">Boris Imenitov</div>
+      <div class="team-role">AI Architect & Engineer</div>
+      <div class="team-bio">AI Architect at Toyota subsidiary (Stuttgart). 12+ years. Expert in KI, solution architecture, rapid prototyping. HFT Stuttgart graduate.</div>
+    </div>
+    <div class="team-card" style="border-color: var(--orange); background: #fff9f7;">
+      <div class="team-name">+ 30 Global Advisors</div>
+      <div class="team-role">Advisory Board</div>
+      <div class="team-bio">Tech Lead @ Google (California) · AI Engineer @ Google DeepMind · AI startup CTO (Canada) · Ex-Sberbank digitalization lead, now Saudi banking (Berlin & Riyadh) · AI Architect, MTS Bank · Corporate development & legal · Tax advisory</div>
+    </div>
+  </div>
+</section>
+
+<!-- MILESTONES / ROADMAP -->
+<section style="background: var(--light);">
+  <div class="section-tag">Roadmap</div>
+  <h2>How Your €10K Accelerates This</h2>
+
+  <div class="milestone-row">
+    <div class="milestone-num">01</div>
+    <div>
+      <div class="milestone-title">Now — Architecture Proof Complete</div>
+      <div class="milestone-desc">New AGI training architecture documented. 10x cost efficiency vs DeepSeek benchmark in progress. Your bridge loan funds final submission preparation.</div>
+    </div>
+  </div>
+  <div class="milestone-row">
+    <div class="milestone-num">02</div>
+    <div>
+      <div class="milestone-title">May 29, 2026 — SPRIND Submission</div>
+      <div class="milestone-desc">Submit to SPRIND Next Frontier AI Challenge. Up to €125M available. Our application: sovereign AGI with novel low-cost architecture. KIT partnership confirmed.</div>
+    </div>
+  </div>
+  <div class="milestone-row">
+    <div class="milestone-num">03</div>
+    <div>
+      <div class="milestone-title">Q3 2026 — SPRIND Win + Your Repayment</div>
+      <div class="milestone-desc">Upon Stage 1 grant disbursement (€3M), you receive €40,000. Fixed. No negotiation. Written in contract.</div>
+    </div>
+  </div>
+  <div class="milestone-row">
+    <div class="milestone-num">04</div>
+    <div>
+      <div class="milestone-title">Q4 2026 — Pre-Seed Round</div>
+      <div class="milestone-desc">Target €1M–€5M pre-seed. Working prototype live. First enterprise client. Valuation: €15M–€40M (Base Case).</div>
+    </div>
+  </div>
+  <div class="milestone-row">
+    <div class="milestone-num">05</div>
+    <div>
+      <div class="milestone-title">2027 — Germany's First AGI Company</div>
+      <div class="milestone-desc">Series A. AGI sovereign GPU data center operational. AGI-as-a-Service for German enterprises, banks, government. Monopoly position.</div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUATION TABLE -->
+<section>
+  <div class="section-tag">Valuation Context</div>
+  <h2>Why €10K Is Less Than 0.3% of Company Value</h2>
+  <p style="margin-bottom: 20px; color: #555; font-size: 14px;">Conservative startup valuation today — no revenue, pre-prototype, but with verified architecture and KIT partnership:</p>
+  <table class="val-table">
+    <thead>
+      <tr>
+        <th>Scenario</th>
+        <th>Valuation</th>
+        <th>Pre-Seed Round</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="val-scenario">Ultra Conservative</td>
+        <td class="val-amount">€3M – €8M</td>
+        <td>€300K – €500K</td>
+        <td>Today — no demo, no prototype</td>
+      </tr>
+      <tr>
+        <td class="val-scenario">Conservative</td>
+        <td class="val-amount">€8M – €15M</td>
+        <td>€500K – €1M</td>
+        <td>Architecture proof + KIT confirmed</td>
+      </tr>
+      <tr>
+        <td class="val-scenario">Base Case</td>
+        <td class="val-amount">€15M – €40M</td>
+        <td>€1M – €3M</td>
+        <td>SPRIND win + working prototype</td>
+      </tr>
+      <tr>
+        <td class="val-scenario">Optimistic</td>
+        <td class="val-amount">€40M – €80M</td>
+        <td>€3M – €8M</td>
+        <td>Seed round + demo + 1st enterprise client</td>
+      </tr>
+      <tr>
+        <td class="val-scenario">Bull Case</td>
+        <td class="val-amount">€80M – €200M</td>
+        <td>€8M – €20M</td>
+        <td>Series A + multiple clients + architecture published</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin-top: 16px; font-size: 12px; color: #888;">Comparable: Aleph Alpha raised €110M equity at ~€300M valuation. Mistral raised €105M seed at €240M. Your €10K is a bridge instrument — not equity. You take no startup risk. You take competition risk only.</p>
+</section>
+
+
+<!-- GERMAN SOVEREIGN VALUE PROPOSITION -->
+<section>
+  <div class="section-tag">Why Germany Needs This</div>
+  <h2>The German Sovereign AI Advantage</h2>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+    <div style="background: var(--light); padding: 24px; border-left: 3px solid var(--orange);">
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">10x Cost Efficiency</div>
+      <p style="font-size: 13px; color: #444; line-height: 1.6;">Our new architecture trains models at 10x lower cost than DeepSeek and OpenAI. German companies can build, train and deploy their own AI — without paying US cloud prices. Enterprise AI becomes affordable for Mittelstand.</p>
+    </div>
+    <div style="background: var(--light); padding: 24px; border-left: 3px solid var(--orange);">
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Deploy on Smaller GPUs</div>
+      <p style="font-size: 13px; color: #444; line-height: 1.6;">Our architecture enables training and deployment on smaller GPU infrastructure — inside the company, on-premise. No hyperscaler dependency. No data leaves the building. Runs on existing hardware.</p>
+    </div>
+    <div style="background: var(--black); padding: 24px; border-left: 3px solid var(--orange);">
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; color: var(--white);">The German Core Model</div>
+      <p style="font-size: 13px; color: #aaa; line-height: 1.6;">A sovereign German AI model built for German government, Deutsche Bahn, Bundeswehr, Allianz, BMW, Siemens, hospitals, courts. Not ChatGPT. Not a US product. A German core — owned, controlled, auditable.</p>
+    </div>
+    <div style="background: var(--black); padding: 24px; border-left: 3px solid var(--orange);">
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; color: var(--white);">Data Privacy = Freedom</div>
+      <p style="font-size: 13px; color: #aaa; line-height: 1.6;">GDPR by architecture. All data stays inside Germany. No training on customer data. No OpenAI Terms of Service. Full EU AI Act compliance by design. For banking, medical, legal — this is not optional. This is mandatory.</p>
+    </div>
+  </div>
+  <div style="background: var(--orange); padding: 20px 24px; display: flex; align-items: center; gap: 20px;">
+    <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 48px; color: var(--white); line-height: 1;">€30B+</div>
+    <div>
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 16px; color: var(--white); text-transform: uppercase; letter-spacing: 1px;">German AI Market by 2027</div>
+      <div style="font-size: 13px; color: rgba(255,255,255,0.85); margin-top: 4px;">Zero sovereign AGI providers today. AGI will be the first and only.</div>
+    </div>
+  </div>
+</section>
+
+<!-- INVESTOR SECURITY — FUNDING TIMELINE -->
+<section style="background: var(--light);">
+  <div class="section-tag">Your Security</div>
+  <h2>You Win Either Way — Here Is Why</h2>
+  <p style="font-size: 14px; color: #555; margin-bottom: 28px;">Even if we do not win the SPRIND prize immediately — the company valuation grows regardless. Your €10K loan is secured by a team, an architecture, and a funding roadmap that moves in one direction only: up.</p>
+
+  <div style="position: relative; margin-bottom: 32px;">
+    <div style="position: absolute; left: 20px; top: 0; bottom: 0; width: 2px; background: var(--mid);"></div>
+
+    <div style="display: flex; gap: 20px; align-items: flex-start; padding: 0 0 24px 0;">
+      <div style="min-width: 40px; height: 40px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; color: white; font-size: 14px; position: relative; z-index: 1;">1</div>
+      <div style="padding-top: 8px;">
+        <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 18px; text-transform: uppercase; letter-spacing: 1px;">Now — Q3 2026 &nbsp;&middot;&nbsp; <span style="color: var(--orange);">€3,000,000</span></div>
+        <div style="font-size: 13px; color: #555; margin-top: 4px; line-height: 1.6;">SPRIND Stage 1 prize. Non-dilutive. <strong>Your €40K repayment triggers here.</strong> KIT H800 GPU cluster access from July 2026 — free compute. Angel / private equity pre-seed investment begins.</div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 20px; align-items: flex-start; padding: 0 0 24px 0;">
+      <div style="min-width: 40px; height: 40px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; color: white; font-size: 14px; position: relative; z-index: 1;">2</div>
+      <div style="padding-top: 8px;">
+        <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 18px; text-transform: uppercase; letter-spacing: 1px;">2026–2027 &nbsp;&middot;&nbsp; <span style="color: var(--orange);">€15,000,000</span></div>
+        <div style="font-size: 13px; color: #555; margin-top: 4px; line-height: 1.6;">SPRIND Stage 2. Working prototype live. First enterprise clients. Pre-seed / Seed from angels or VC (e.g. VISTA Equity). Valuation: €15M–€80M. Company fully operational with German sovereign model.</div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 20px; align-items: flex-start; padding: 0 0 24px 0;">
+      <div style="min-width: 40px; height: 40px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; color: white; font-size: 14px; position: relative; z-index: 1;">3</div>
+      <div style="padding-top: 8px;">
+        <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 18px; text-transform: uppercase; letter-spacing: 1px;">2027–2028 &nbsp;&middot;&nbsp; <span style="color: var(--orange);">€125,000,000</span></div>
+        <div style="font-size: 13px; color: #555; margin-top: 4px; line-height: 1.6;">SPRIND maximum prize — full program. Series A institutional round. AGI sovereign GPU data center operational. Germany's national AI infrastructure provider. Multiple enterprise contracts.</div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 20px; align-items: flex-start;">
+      <div style="min-width: 40px; height: 40px; background: var(--black); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; color: var(--orange); font-size: 14px; position: relative; z-index: 1;">4</div>
+      <div style="padding-top: 8px;">
+        <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 18px; text-transform: uppercase; letter-spacing: 1px;">2028+ &nbsp;&middot;&nbsp; <span style="color: var(--orange);">€1,000,000,000</span></div>
+        <div style="font-size: 13px; color: #555; margin-top: 4px; line-height: 1.6;">Backed by €1B institutional / sovereign capital. EU strategic AI infrastructure. Mistral: €105M seed → €13.7B in 29 months. AMI Labs (LeCun): $1.03B seed. Aleph Alpha: €533M. AGI starts the same — with a fundamental architecture shift no one else in Germany has.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background: var(--black); padding: 28px 32px; border-left: 4px solid var(--orange);">
+    <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 22px; color: var(--white); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;">What Secures Your €10,000</div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div>
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--orange); text-transform: uppercase; margin-bottom: 6px;">Collateral 1 — Valuation</div>
+        <div style="font-size: 13px; color: #ccc; line-height: 1.6;">Company valued €3M–€8M today. Your loan is less than 0.3% of company value. Even at the most conservative estimate, the asset backing your loan is 300x your investment.</div>
+      </div>
+      <div>
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--orange); text-transform: uppercase; margin-bottom: 6px;">Collateral 2 — Architecture</div>
+        <div style="font-size: 13px; color: #ccc; line-height: 1.6;">The architecture already exists. The team already exists. KIT partnership confirmed. GPU access from July. We are not funding an idea. We are funding a submission that is already built.</div>
+      </div>
+      <div>
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--orange); text-transform: uppercase; margin-bottom: 6px;">Collateral 3 — Public Funding</div>
+        <div style="font-size: 13px; color: #ccc; line-height: 1.6;">Non-dilutive roadmap: €3M → €15M → €125M is government grants. It does not dilute equity. The company grows in value at every stage regardless of private round outcomes.</div>
+      </div>
+      <div>
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--orange); text-transform: uppercase; margin-bottom: 6px;">Collateral 4 — Global Network</div>
+        <div style="font-size: 13px; color: #ccc; line-height: 1.6;">20 global advisors: Google, banking, AI. Private equity and angel round follows SPRIND win. Valuation rise is structural. Germany has no other AGI company. The monopoly position alone justifies the valuation growth.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- PROJECTION CHARTS - Pure SVG, no dependencies -->
+<section style="background: var(--white); padding: 48px 56px;">
+  <div class="section-tag">Projections</div>
+  <h2>AGI Growth Trajectory — 2026–2031</h2>
+  <p style="font-size: 13px; color: #666; margin-bottom: 32px;">Based on SPRIND funding milestones, private investment rounds, and comparable European AI startup trajectories.</p>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+
+    <!-- VALUATION -->
+    <div style="background: var(--light); padding: 24px; border-top: 3px solid var(--orange);">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Valuation Projection</div>
+      <div style="font-size:11px;color:#888;margin-bottom:12px;letter-spacing:1px;">€ Millions · Today = €8M</div>
+      <svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-family:'Barlow',sans-serif;">
+        <!-- grid -->
+        <line x1="40" y1="10" x2="40" y2="130" stroke="#ddd" stroke-width="1"/>
+        <line x1="40" y1="130" x2="310" y2="130" stroke="#ddd" stroke-width="1"/>
+        <line x1="40" y1="90" x2="310" y2="90" stroke="#eee" stroke-width="0.5" stroke-dasharray="4,3"/>
+        <line x1="40" y1="50" x2="310" y2="50" stroke="#eee" stroke-width="0.5" stroke-dasharray="4,3"/>
+        <!-- y labels -->
+        <text x="35" y="133" font-size="9" fill="#999" text-anchor="end">€0</text>
+        <text x="35" y="93" font-size="9" fill="#999" text-anchor="end">€400M</text>
+        <text x="35" y="53" font-size="9" fill="#999" text-anchor="end">€800M</text>
+        <text x="35" y="13" font-size="9" fill="#999" text-anchor="end">€1.2B</text>
+        <!-- data points: today=8→2031=1200, scaled to 0-130px for 0-1200M -->
+        <!-- x positions: 40,93,146,199,252,310 -->
+        <!-- y = 130 - (val/1200)*120 -->
+        <!-- 8→129.2, 40→126, 150→115, 400→90, 750→55, 1200→10 -->
+        <polyline points="40,129 93,126 146,115 199,90 252,55 310,10"
+          fill="rgba(232,92,43,0.1)" stroke="#E85C2B" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle cx="40" cy="129" r="4" fill="#E85C2B"/>
+        <circle cx="93" cy="126" r="4" fill="#E85C2B"/>
+        <circle cx="146" cy="115" r="4" fill="#E85C2B"/>
+        <circle cx="199" cy="90" r="4" fill="#E85C2B"/>
+        <circle cx="252" cy="55" r="4" fill="#E85C2B"/>
+        <circle cx="310" cy="10" r="4" fill="#E85C2B"/>
+        <!-- value labels -->
+        <text x="40" y="143" font-size="8" fill="#E85C2B" text-anchor="middle" font-weight="bold">€8M</text>
+        <text x="93" y="120" font-size="8" fill="#E85C2B" text-anchor="middle">€40M</text>
+        <text x="146" y="109" font-size="8" fill="#E85C2B" text-anchor="middle">€150M</text>
+        <text x="199" y="84" font-size="8" fill="#E85C2B" text-anchor="middle">€400M</text>
+        <text x="252" y="49" font-size="8" fill="#E85C2B" text-anchor="middle">€750M</text>
+        <text x="310" y="6" font-size="8" fill="#E85C2B" text-anchor="middle">€1.2B</text>
+        <!-- x labels -->
+        <text x="40" y="152" font-size="8" fill="#666" text-anchor="middle">Today</text>
+        <text x="93" y="152" font-size="8" fill="#666" text-anchor="middle">2027</text>
+        <text x="146" y="152" font-size="8" fill="#666" text-anchor="middle">2028</text>
+        <text x="199" y="152" font-size="8" fill="#666" text-anchor="middle">2029</text>
+        <text x="252" y="152" font-size="8" fill="#666" text-anchor="middle">2030</text>
+        <text x="310" y="152" font-size="8" fill="#666" text-anchor="middle">2031</text>
+      </svg>
+    </div>
+
+    <!-- CUMULATIVE FUNDING -->
+    <div style="background: var(--light); padding: 24px; border-top: 3px solid var(--orange);">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Cumulative Funding</div>
+      <div style="font-size:11px;color:#888;margin-bottom:12px;letter-spacing:1px;">€ Millions · Non-Dilutive + Private</div>
+      <svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-family:'Barlow',sans-serif;">
+        <line x1="40" y1="10" x2="40" y2="130" stroke="#ddd" stroke-width="1"/>
+        <line x1="40" y1="130" x2="310" y2="130" stroke="#ddd" stroke-width="1"/>
+        <!-- bars: values 3,18,50,143,250,350 → scale /350*120 -->
+        <!-- x positions centers: 62,106,150,194,238,288, width=32 -->
+        <rect x="46" y="129" width="32" height="1" fill="#E85C2B" opacity="0.4"/>
+        <rect x="46" y="123.8" width="32" height="6.2" fill="#E85C2B" opacity="0.4"/>
+        <text x="62" y="119" font-size="8" fill="#E85C2B" text-anchor="middle">€3M</text>
+
+        <rect x="90" y="123.8" width="32" height="6.2" fill="#E85C2B" opacity="0.4"/>
+        <rect x="90" y="99.8" width="32" height="30.2" fill="#E85C2B" opacity="0.55"/>
+        <text x="106" y="96" font-size="8" fill="#E85C2B" text-anchor="middle">€18M</text>
+
+        <rect x="134" y="99.8" width="32" height="30.2" fill="#E85C2B" opacity="0.55"/>
+        <rect x="134" y="112.9" width="32" height="17.1" fill="#E85C2B" opacity="0.7"/>
+        <text x="150" y="109" font-size="8" fill="#E85C2B" text-anchor="middle">€50M</text>
+
+        <rect x="178" y="79.9" width="32" height="50.1" fill="#E85C2B" opacity="0.7"/>
+        <text x="194" y="76" font-size="8" fill="#E85C2B" text-anchor="middle">€143M</text>
+
+        <rect x="222" y="44.3" width="32" height="85.7" fill="#E85C2B" opacity="0.85"/>
+        <text x="238" y="40" font-size="8" fill="#E85C2B" text-anchor="middle">€250M</text>
+
+        <rect x="272" y="10" width="32" height="120" fill="#E85C2B"/>
+        <text x="288" y="8" font-size="8" fill="#E85C2B" text-anchor="middle">€350M</text>
+
+        <text x="62" y="148" font-size="8" fill="#666" text-anchor="middle">Today</text>
+        <text x="106" y="148" font-size="8" fill="#666" text-anchor="middle">2027</text>
+        <text x="150" y="148" font-size="8" fill="#666" text-anchor="middle">2028</text>
+        <text x="194" y="148" font-size="8" fill="#666" text-anchor="middle">2029</text>
+        <text x="238" y="148" font-size="8" fill="#666" text-anchor="middle">2030</text>
+        <text x="288" y="148" font-size="8" fill="#666" text-anchor="middle">2031</text>
+      </svg>
+    </div>
+
+    <!-- REVENUE -->
+    <div style="background: var(--light); padding: 24px; border-top: 3px solid var(--orange);">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Revenue Projection (ARR)</div>
+      <div style="font-size:11px;color:#888;margin-bottom:12px;letter-spacing:1px;">€ Millions · Base Case</div>
+      <svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-family:'Barlow',sans-serif;">
+        <line x1="40" y1="10" x2="40" y2="130" stroke="#ddd" stroke-width="1"/>
+        <line x1="40" y1="130" x2="310" y2="130" stroke="#ddd" stroke-width="1"/>
+        <line x1="40" y1="90" x2="310" y2="90" stroke="#eee" stroke-width="0.5" stroke-dasharray="4,3"/>
+        <line x1="40" y1="50" x2="310" y2="50" stroke="#eee" stroke-width="0.5" stroke-dasharray="4,3"/>
+        <text x="35" y="133" font-size="9" fill="#999" text-anchor="end">€0</text>
+        <text x="35" y="93" font-size="9" fill="#999" text-anchor="end">€100M</text>
+        <text x="35" y="53" font-size="9" fill="#999" text-anchor="end">€200M</text>
+        <text x="35" y="13" font-size="9" fill="#999" text-anchor="end">€300M</text>
+        <!-- values: 1,5,20,60,150,320 scaled /320*120 -->
+        <!-- 1→129.6, 5→128.1, 20→122.5, 60→107.5, 150→73.8, 320→10 -->
+        <polyline points="40,130 93,128 146,123 199,108 252,74 310,10"
+          fill="rgba(10,10,10,0.05)" stroke="#0a0a0a" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle cx="40" cy="130" r="4" fill="#0a0a0a"/>
+        <circle cx="93" cy="128" r="4" fill="#0a0a0a"/>
+        <circle cx="146" cy="123" r="4" fill="#0a0a0a"/>
+        <circle cx="199" cy="108" r="4" fill="#0a0a0a"/>
+        <circle cx="252" cy="74" r="4" fill="#0a0a0a"/>
+        <circle cx="310" cy="10" r="4" fill="#0a0a0a"/>
+        <text x="40" y="143" font-size="8" fill="#333" text-anchor="middle">€1M</text>
+        <text x="93" y="122" font-size="8" fill="#333" text-anchor="middle">€5M</text>
+        <text x="146" y="117" font-size="8" fill="#333" text-anchor="middle">€20M</text>
+        <text x="199" y="102" font-size="8" fill="#333" text-anchor="middle">€60M</text>
+        <text x="252" y="68" font-size="8" fill="#333" text-anchor="middle">€150M</text>
+        <text x="310" y="6" font-size="8" fill="#333" text-anchor="middle">€320M</text>
+        <text x="40" y="152" font-size="8" fill="#666" text-anchor="middle">Today</text>
+        <text x="93" y="152" font-size="8" fill="#666" text-anchor="middle">2027</text>
+        <text x="146" y="152" font-size="8" fill="#666" text-anchor="middle">2028</text>
+        <text x="199" y="152" font-size="8" fill="#666" text-anchor="middle">2029</text>
+        <text x="252" y="152" font-size="8" fill="#666" text-anchor="middle">2030</text>
+        <text x="310" y="152" font-size="8" fill="#666" text-anchor="middle">2031</text>
+      </svg>
+    </div>
+
+    <!-- MARKET SHARE -->
+    <div style="background: var(--light); padding: 24px; border-top: 3px solid var(--orange);">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Market Share — 2030</div>
+      <div style="font-size:11px;color:#888;margin-bottom:12px;letter-spacing:1px;">Sovereign AI · Germany / EU / Global</div>
+      <svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-family:'Barlow',sans-serif;">
+        <!-- Germany: 35%, EU: 12%, Global: 2% — horizontal bars -->
+        <!-- bar height=28, gap=16 -->
+        <!-- Germany -->
+        <text x="5" y="38" font-size="9" fill="#444" font-weight="600">Germany</text>
+        <rect x="5" y="42" width="224" height="18" fill="#E85C2B" rx="2"/>
+        <text x="234" y="54" font-size="9" fill="#E85C2B" font-weight="bold">35%</text>
+        <rect x="5" y="42" width="115" height="18" fill="rgba(232,92,43,0.3)" rx="2"/>
+        <text x="120" y="54" font-size="8" fill="#fff" text-anchor="middle">2028: 18%</text>
+        <text x="268" y="54" font-size="8" fill="#888">2030</text>
+
+        <!-- EU -->
+        <text x="5" y="84" font-size="9" fill="#444" font-weight="600">EU</text>
+        <rect x="5" y="88" width="77" height="18" fill="#E85C2B" rx="2"/>
+        <text x="87" y="100" font-size="9" fill="#E85C2B" font-weight="bold">12%</text>
+        <rect x="5" y="88" width="26" height="18" fill="rgba(232,92,43,0.3)" rx="2"/>
+        <text x="18" y="100" font-size="8" fill="#fff" text-anchor="middle">4%</text>
+        <text x="268" y="100" font-size="8" fill="#888">2030</text>
+
+        <!-- Global -->
+        <text x="5" y="130" font-size="9" fill="#444" font-weight="600">Global</text>
+        <rect x="5" y="134" width="13" height="18" fill="#E85C2B" rx="2"/>
+        <text x="23" y="146" font-size="9" fill="#E85C2B" font-weight="bold">2%</text>
+        <rect x="5" y="134" width="3" height="18" fill="rgba(232,92,43,0.3)" rx="2"/>
+        <text x="268" y="146" font-size="8" fill="#888">2030</text>
+
+        <!-- legend -->
+        <rect x="5" y="158" width="10" height="6" fill="rgba(232,92,43,0.3)"/>
+        <text x="19" y="164" font-size="8" fill="#666">2028</text>
+        <rect x="50" y="158" width="10" height="6" fill="#E85C2B"/>
+        <text x="64" y="164" font-size="8" fill="#666">2030</text>
+      </svg>
+    </div>
+
+    <!-- NON-DILUTIVE FUNDING ROADMAP - Donut Chart -->
+    <div style="background: var(--black); padding: 24px; border-top: 3px solid var(--orange); grid-column: 1 / -1;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;color:var(--white);">Non-Dilutive Public Funding Roadmap</div>
+      <div style="font-size:11px;color:#888;margin-bottom:16px;letter-spacing:1px;">Total €1,143M · Zero Equity Dilution · SPRIND + Institutional</div>
+      <div style="display:flex;align-items:center;gap:40px;justify-content:center;">
+
+        <!-- SVG Donut -->
+        <!-- Total = 1143M. Segments: 3(0.26%), 15(1.31%), 125(10.94%), 1000(87.49%) -->
+        <!-- circumference of r=80 = 502.65 -->
+        <!-- stroke-dasharray = segment%, gap = rest -->
+        <!-- 1000/1143*502.65=439.8, 125/1143*502.65=54.97, 15/1143*502.65=6.6, 3/1143*502.65=1.32 -->
+        <!-- rotate each to start after previous -->
+        <svg viewBox="0 0 220 220" style="width:220px;height:220px;flex-shrink:0;">
+          <!-- bg circle -->
+          <circle cx="110" cy="110" r="80" fill="none" stroke="#222" stroke-width="36"/>
+          <!-- Segment €1000M - orange -->
+          <circle cx="110" cy="110" r="80" fill="none" stroke="#E85C2B" stroke-width="36"
+            stroke-dasharray="439.8 62.85"
+            stroke-dashoffset="0"
+            transform="rotate(-90 110 110)"/>
+          <!-- Segment €125M - white -->
+          <circle cx="110" cy="110" r="80" fill="none" stroke="#ffffff" stroke-width="36"
+            stroke-dasharray="54.97 447.68"
+            stroke-dashoffset="-439.8"
+            transform="rotate(-90 110 110)"/>
+          <!-- Segment €15M - light gray -->
+          <circle cx="110" cy="110" r="80" fill="none" stroke="#888888" stroke-width="36"
+            stroke-dasharray="6.6 496.05"
+            stroke-dashoffset="-494.77"
+            transform="rotate(-90 110 110)"/>
+          <!-- Segment €3M - yellow -->
+          <circle cx="110" cy="110" r="80" fill="none" stroke="#f5c842" stroke-width="36"
+            stroke-dasharray="1.32 501.33"
+            stroke-dashoffset="-501.37"
+            transform="rotate(-90 110 110)"/>
+          <!-- Center text -->
+          <text x="110" y="104" font-family="Barlow Condensed,sans-serif" font-size="22" font-weight="900" fill="#E85C2B" text-anchor="middle">€1.14B</text>
+          <text x="110" y="122" font-family="Barlow,sans-serif" font-size="9" fill="#888" text-anchor="middle">TOTAL FUNDING</text>
+          <text x="110" y="134" font-family="Barlow,sans-serif" font-size="8" fill="#555" text-anchor="middle">NON-DILUTIVE</text>
+        </svg>
+
+        <!-- Legend -->
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:14px;height:14px;background:#E85C2B;border-radius:2px;flex-shrink:0;"></div>
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;color:#E85C2B;line-height:1;">€1,000M</div>
+              <div style="font-size:10px;color:#aaa;letter-spacing:1px;">2029+ · Institutional Backing · 87.5%</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:14px;height:14px;background:#ffffff;border-radius:2px;flex-shrink:0;"></div>
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;color:#E85C2B;line-height:1;opacity:0.75;">€125M</div>
+              <div style="font-size:10px;color:#aaa;letter-spacing:1px;">2028 · SPRIND Full Prize · 10.9%</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:14px;height:14px;background:#888888;border-radius:2px;flex-shrink:0;"></div>
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;color:#E85C2B;line-height:1;opacity:0.55;">€15M</div>
+              <div style="font-size:10px;color:#aaa;letter-spacing:1px;">2027 · SPRIND Stage 2 · 1.3%</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:14px;height:14px;background:#f5c842;border-radius:2px;flex-shrink:0;"></div>
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;color:#E85C2B;line-height:1;opacity:0.35;">€3M</div>
+              <div style="font-size:10px;color:#aaa;letter-spacing:1px;">Q3 2026 · SPRIND Stage 1 · 0.3%</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+
+  <!-- CALLOUTS -->
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: var(--mid); margin-top: 24px;">
+    <div style="background: var(--black); padding: 16px; text-align: center;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;color:var(--orange);">€8M</div>
+      <div style="font-size:10px;color:#888;letter-spacing:1px;margin-top:4px;">VALUATION TODAY</div>
+    </div>
+    <div style="background: var(--black); padding: 16px; text-align: center;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;color:var(--orange);">€125M</div>
+      <div style="font-size:10px;color:#888;letter-spacing:1px;margin-top:4px;">SPRIND MAX PRIZE</div>
+    </div>
+    <div style="background: var(--black); padding: 16px; text-align: center;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;color:var(--orange);">€1B</div>
+      <div style="font-size:10px;color:#888;letter-spacing:1px;margin-top:4px;">TARGET VALUATION 2029</div>
+    </div>
+    <div style="background: var(--orange); padding: 16px; text-align: center;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;color:var(--white);">4x</div>
+      <div style="font-size:10px;color:rgba(255,255,255,0.85);letter-spacing:1px;margin-top:4px;">YOUR RETURN</div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- MARKET COMPS -->
+<section style="background: var(--black); color: var(--white); padding: var(--section-pad);">
+  <div class="section-tag">Market Context</div>
+  <h2 style="color: var(--white);">The AI Race — Where AGI Sits</h2>
+  <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; background: #333; margin-top: 8px;">
+    <div style="background: #111; padding: 16px; text-align: center;">
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 22px; color: var(--orange);">$852B</div>
+      <div style="font-size: 11px; color: #888; margin-top: 4px; letter-spacing: 1px;">OpenAI</div>
+    </div>
+    <div style="background: #111; padding: 16px; text-align: center;">
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 22px; color: var(--orange);">$380B</div>
+      <div style="font-size: 11px; color: #888; margin-top: 4px; letter-spacing: 1px;">Anthropic</div>
+    </div>
+    <div style="background: #111; padding: 16px; text-align: center;">
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 22px; color: var(--orange);">$13.7B</div>
+      <div style="font-size: 11px; color: #888; margin-top: 4px; letter-spacing: 1px;">Mistral</div>
+    </div>
+    <div style="background: #111; padding: 16px; text-align: center;">
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 22px; color: var(--orange);">$3.5B</div>
+      <div style="font-size: 11px; color: #888; margin-top: 4px; letter-spacing: 1px;">AMI (LeCun)</div>
+    </div>
+    <div style="background: #111; padding: 16px; text-align: center; ">
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 22px; color: var(--orange);">~$3.4B</div>
+      <div style="font-size: 11px; color: #888; margin-top: 4px; letter-spacing: 1px;">DeepSeek</div>
+    </div>
+    <div style="background: #111; padding: 16px; text-align: center; ">
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 22px; color: var(--orange);">~$40B</div>
+      <div style="font-size: 11px; color: #888; margin-top: 4px; letter-spacing: 1px;">Alibaba/Qwen AI</div>
+    </div>
+    <div style="background: var(--orange); padding: 16px; text-align: center;">
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 22px; color: var(--white);">€3–8M</div>
+      <div style="font-size: 11px; color: rgba(255,255,255,0.8); margin-top: 4px; letter-spacing: 1px;">AGI</div>
+      <div style="font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 3px;">Simon Zab</div>
+    </div>
+  </div>
+  <p style="margin-top: 20px; font-size: 13px; color: #888; font-weight: 300;">Every company above started at zero. Mistral: 3 founders, €105M seed in 2023. Today: €13.7B. AGI: 4 core engineers from KIT + 20 global advisors. Germany has no sovereign AGI company. That gap is the opportunity.</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">A<span>GI</span></div>
+    <div style="font-size: 12px; color: #555; margin-top: 8px;">OpenAGI · Karlsruhe 76133<br>Baden-Württemberg, Germany<br>KIT based research groups. AGI Labs</div>
+  </div>
+  <div class="footer-info">
+    Confidential Investment Document<br>
+    April 2026<br>
+    SPRIND Next Frontier AI Challenge<br>
+    Deadline: May 29, 2026
+  </div>
+</footer>
+<div class="footer-disclaimer">
+  This document is a private, confidential offer addressed to a specific individual. It does not constitute a public offering of securities. The loan instrument described herein is a personal bridge agreement. Repayment is conditional on the trigger event (SPRIND grant disbursement). Startup valuations are estimates based on comparable market data and do not constitute a guarantee of value.
+</div>
+
+</body>
+</html>
